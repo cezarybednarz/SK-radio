@@ -8,22 +8,22 @@
 #define METADATA_DEFINED (1 << 3) /* -m yes|no (optional) */
 #define TIMEOUT_DEFINED  (1 << 4) /* -t timeout (optional) */
 
-class Radio-proxy {
+class Radio_proxy {
     
     int flags; 
     
     
 public:
-    Radio_proxy() {
-        flags = 0;
-    }
+    Radio_proxy();
     
-    void init(int argc, char* argv[]);
+    bool init(int argc, char* argv[]);
+    
+    void start(); 
     
 private:
-    bool parse_host(std::string host);
-    bool parse_resource(std::string resource);
-    bool parse_port(std::string port);
-    bool parse_metadata(std::string metadata);
-    bool parse_timeout(std::string timeout);
-}
+    bool parse_host(const std::string host);
+    bool parse_resource(const std::string resource);
+    bool parse_port(const std::string port);
+    bool parse_metadata(const std::string metadata);
+    bool parse_timeout(const std::string timeout);
+};

@@ -1,4 +1,4 @@
-EXECS = rawping spoofping
+EXECS = radio-proxy
 
 CPPFLAGS = -Wall
 LDFLAGS	= 
@@ -6,11 +6,10 @@ LDLIBS =
 
 TARGET: $(EXECS)
 
-rawping.o err.o dropnobody.o spoofping.o: err.h
+radio-proxy.o err.o: radio-proxy.h err.h
 
-rawping: rawping.o err.o in_cksum.o dropnobody.o
+radio-proxy: err.o
 
-spoofping: spoofping.o err.o in_cksum.o dropnobody.o
 
 .PHONY: clean TARGET
 clean:
