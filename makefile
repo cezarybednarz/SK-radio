@@ -1,5 +1,6 @@
 EXECS = radio-proxy
 
+CC=g++
 CPPFLAGS = -Wall
 LDFLAGS	= 
 LDLIBS = 

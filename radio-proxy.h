@@ -2,6 +2,9 @@
 #include <cstdio>
 #include <string>
 
+#ifndef RADIO_PROXY_H
+#define RADIO_PROXY_H
+
 #define HOST_DEFINED     (1 << 0) /* -h host */
 #define RESOURCE_DEFINED (1 << 1) /* -r resource */
 #define PORT_DEFINED     (1 << 2) /* -p port */
@@ -27,3 +30,5 @@ private:
     bool parse_metadata(const std::string metadata);
     bool parse_timeout(const std::string timeout);
 };
+
+#endif /* RADIO_PROXY_H */

@@ -51,35 +51,29 @@ bool Radio_proxy::init(int argc, char* argv[]) {
         return false;
         
     for (int i = 1; i + 1 < argc; i += 2) {
-        switch (argv[i]) {
-            case "-h":
-                if (!parse_host(argv[i + 1])
-                    return false;
-                break;
-                
-            case "-r":
-                if (!parse_resource(argv[i + 1]))
-                    return false;
-                break;
-                
-            case "-p":
-                if(!parse_port(argv[i + 1]))
-                    return false;
-                break;
-                
-            case "-m":
-                if (!parse_metadata(argv[i + 1])
-                    return false;
-                break;
-                
-            case "-t":
-                if (!parse_timeout(argv[i + 1])
-                    return false;
-                break;
-                
-            default:
+        std::string curr = argv[i], next = argv[i + 1];
+        if (curr == "-h") {
+            if (!parse_host(next))
                 return false;
-                break;
+        }
+        else if (curr == "-r") {
+            if (!parse_resource(next))
+                return false;
+        } 
+        else if (curr == "-p") {
+            if(!parse_port(next))
+                return false;
+        } 
+        else if (curr == "-m") {
+            if (!parse_metadata(next))
+                return false;
+        }
+        else if (curr == "-t") {
+            if (!parse_timeout(next))
+                return false;
+        }
+        else {
+            return false;
         }
     }
     return true;
@@ -92,8 +86,13 @@ void Radio_proxy::start() {
 
 int main(int argc, char* argv[]) {
     Radio_proxy radio;
-    radio.init(argc, argv);
-    radio.start();
+    
+    if (!radio.init(argc, argv)) {
+        printf("error while starting\n");
+    }
+    else {
+        radio.start();
+    }
     
     return 0;
 }
