@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <string>
+#include <cstdlib>
 
 #ifndef RADIO_PROXY_H
 #define RADIO_PROXY_H
@@ -14,6 +15,12 @@
 class Radio_proxy {
     
     int flags; 
+    
+    std::string host;
+    std::string resource;
+    int port;
+    bool metadata;
+    int timeout;
     
     
 public:

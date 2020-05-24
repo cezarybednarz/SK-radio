@@ -2,42 +2,74 @@
 #include "radio-proxy.h"
 
 
-bool Radio_proxy::parse_host(const std::string host) {
+bool Radio_proxy::parse_host(const std::string _host) {
     if (flags & HOST_DEFINED) 
         return false;
     flags |= HOST_DEFINED;
     
+    // parsowanie
+    
+    host = _host;
+    
     return true;
 }
 
-bool Radio_proxy::parse_resource(const std::string resource) {
+bool Radio_proxy::parse_resource(const std::string _resource) {
     if (flags & RESOURCE_DEFINED) 
         return false;
     flags |= RESOURCE_DEFINED;
     
+    // parsowanie
+    
+    resource = _resource;
+    
     return true;
 }
 
-bool Radio_proxy::parse_port(const std::string port) {
+bool Radio_proxy::parse_port(const std::string _port) {
     if (flags & PORT_DEFINED)
         return false;
     flags |= PORT_DEFINED;
     
-    return true;
-}
-
-bool Radio_proxy::parse_metadata(const std::string metadata) {
-    if (flags & METADATA_DEFINED)
-        return false;
-    flags |= METADATA_DEFINED;
+    for (char c : _port) {
+        if (!std::isdigit(c))
+            return false;
+    }
+    
+    port = std::stoi(_port);
     
     return true;
 }
 
-bool Radio_proxy::parse_timeout(const std::string timeout) {
+bool Radio_proxy::parse_metadata(const std::string _metadata) {
+    if (flags & METADATA_DEFINED)
+        return false;
+    flags |= METADATA_DEFINED;
+    
+    if (_metadata == "yes") {
+        metadata = true;
+    } 
+    else if (_metadata == "no") {
+        metadata = false;
+    } 
+    else {
+        return false;
+    }
+    
+    return true;
+}
+
+bool Radio_proxy::parse_timeout(const std::string _timeout) {
     if (flags & TIMEOUT_DEFINED)
         return false;
     flags |= TIMEOUT_DEFINED;
+    
+    for (char c : _timeout) {
+        if (!std::isdigit(c))
+            return false;
+    }
+    
+    timeout = std::stoi(_timeout);
     
     return true;
 }

@@ -1,7 +1,7 @@
 EXECS = radio-proxy
 
 CC=g++
-CPPFLAGS = -Wall
+CPPFLAGS = -Wall -Wextra -O2 -std=c++17
 LDFLAGS	= 
 LDLIBS = 
 
