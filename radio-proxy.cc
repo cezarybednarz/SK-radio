@@ -1,8 +1,9 @@
 
 #include "radio-proxy.h"
+#include "constants.h"
 
 
-bool Radio_proxy::parse_host(const std::string _host) {
+bool Radio_proxy::parse_host(const std::string& _host) {
     if (flags & HOST_DEFINED) 
         return false;
     flags |= HOST_DEFINED;
@@ -14,7 +15,7 @@ bool Radio_proxy::parse_host(const std::string _host) {
     return true;
 }
 
-bool Radio_proxy::parse_resource(const std::string _resource) {
+bool Radio_proxy::parse_resource(const std::string& _resource) {
     if (flags & RESOURCE_DEFINED) 
         return false;
     flags |= RESOURCE_DEFINED;
@@ -26,7 +27,7 @@ bool Radio_proxy::parse_resource(const std::string _resource) {
     return true;
 }
 
-bool Radio_proxy::parse_port(const std::string _port) {
+bool Radio_proxy::parse_port(const std::string& _port) {
     if (flags & PORT_DEFINED)
         return false;
     flags |= PORT_DEFINED;
@@ -41,7 +42,7 @@ bool Radio_proxy::parse_port(const std::string _port) {
     return true;
 }
 
-bool Radio_proxy::parse_metadata(const std::string _metadata) {
+bool Radio_proxy::parse_metadata(const std::string& _metadata) {
     if (flags & METADATA_DEFINED)
         return false;
     flags |= METADATA_DEFINED;
@@ -59,7 +60,7 @@ bool Radio_proxy::parse_metadata(const std::string _metadata) {
     return true;
 }
 
-bool Radio_proxy::parse_timeout(const std::string _timeout) {
+bool Radio_proxy::parse_timeout(const std::string& _timeout) {
     if (flags & TIMEOUT_DEFINED)
         return false;
     flags |= TIMEOUT_DEFINED;
@@ -79,7 +80,7 @@ Radio_proxy::Radio_proxy() {
     
     /* default values */
     metadata = false;
-    timeot = 5; 
+    timeout = 5;
 }
 
 bool Radio_proxy::init(int argc, char* argv[]) {
@@ -119,10 +120,9 @@ void Radio_proxy::start() {
     std::cout << "radio-proxy started\n";
 }
 
-
 int main(int argc, char* argv[]) {
     Radio_proxy radio;
-    
+
     if (!radio.init(argc, argv)) {
         printf("error while starting\n");
     }
