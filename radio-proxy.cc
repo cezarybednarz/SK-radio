@@ -76,6 +76,10 @@ bool Radio_proxy::parse_timeout(const std::string _timeout) {
 
 Radio_proxy::Radio_proxy() {
     flags = 0;
+    
+    /* default values */
+    metadata = false;
+    timeot = 5; 
 }
 
 bool Radio_proxy::init(int argc, char* argv[]) {
