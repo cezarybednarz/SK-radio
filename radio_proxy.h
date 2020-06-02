@@ -3,23 +3,29 @@
 #include <string>
 #include <cstdlib>
 
+#include "constants.h"
+#include "tcp_socket.h"
+#include "err.h"
+
 #ifndef RADIO_PROXY_H
 #define RADIO_PROXY_H
+
 
 class Radio_proxy {
     
     unsigned flags;
     std::string host;
     std::string resource;
-    int port;
+    std::string port;
     bool metadata;
     int timeout;
     
 public:
     Radio_proxy();
     bool init(int argc, char* argv[]);
-    void start(); 
-    
+    void start();
+    std::string create_get_request();
+
 private:
     bool parse_host(const std::string& host);
     bool parse_resource(const std::string& resource);

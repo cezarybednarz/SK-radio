@@ -1,6 +1,5 @@
 
 #include "radio_proxy.h"
-#include "constants.h"
 
 
 bool Radio_proxy::parse_host(const std::string& _host) {
@@ -36,8 +35,10 @@ bool Radio_proxy::parse_port(const std::string& _port) {
         if (!std::isdigit(c))
             return false;
     }
-    
-    port = std::stoi(_port);
+
+    // parsowanie
+
+    port = _port;
     
     return true;
 }
@@ -113,10 +114,50 @@ bool Radio_proxy::init(int argc, char* argv[]) {
             return false;
         }
     }
+
+    if (!(flags & HOST_DEFINED)) {
+        std::cerr << "define host\n";
+        return false;
+    }
+
+    if (!(flags & RESOURCE_DEFINED)) {
+        std::cerr << "define resource\n";
+        return false;
+    }
+    if (!(flags & PORT_DEFINED)) {
+        std::cerr << "define port\n";
+        return false;
+    }
+
     return true;
 }
 
+std::string Radio_proxy::create_get_request() {
+    std::string ret;
+    ret.append("GET " + resource + " HTTP/1.0\r\n");
+    ret.append("Host: " + host + "\r\n");
+    ret.append("Accept: */*\r\n");
+    ret.append("Icy-MetaData:1\r\n");
+    ret.append("Connection: close\r\n");
+    ret.append("\r\n");
+    return ret;
+}
+
 void Radio_proxy::start() {
+    std::cout << "starting radio-proxy\n";
+
+    Tcp_socket tcp_socket(host, port);
+    tcp_socket.socket_connect();
+    tcp_socket.socket_send_request(create_get_request());
+
+    std::cout << create_get_request() << "\n";
+
+    std::string curr_line = "";
+    while (curr_line != "\r\n") {
+        curr_line = tcp_socket.socket_getline();
+        std::cout << curr_line << "\n";
+    }
+
     std::cout << "radio-proxy started\n";
 }
 
@@ -124,7 +165,7 @@ int main(int argc, char* argv[]) {
     Radio_proxy radio;
 
     if (!radio.init(argc, argv)) {
-        printf("error while starting\n");
+        syserr("Radio_proxy::init()");
     }
     else {
         radio.start();

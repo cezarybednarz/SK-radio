@@ -26,10 +26,11 @@ class Tcp_socket {
     FILE *fp;
 
 public:
-    Tcp_socket(char* addr, char* port);
+    Tcp_socket(const std::string& addr, const std::string& port);
     void socket_connect();
-    void socket_send(std::string content);
-    std::string socket_receive();
+    void socket_send_request(std::string content);
+    std::string socket_getline();
+    std::string socket_read_n_bytes(size_t n);
 };
 
 #endif //TCP_SOCKET_H
