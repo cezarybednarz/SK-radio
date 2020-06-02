@@ -134,11 +134,12 @@ bool Radio_proxy::init(int argc, char* argv[]) {
 
 std::string Radio_proxy::create_get_request() {
     std::string ret;
-    ret.append("GET " + resource + " HTTP/1.0\r\n");
+    ret.append("GET " + resource + " HTTP/1.1\r\n");
     ret.append("Host: " + host + "\r\n");
     ret.append("Accept: */*\r\n");
-    ret.append("Icy-MetaData:1\r\n");
+    ret.append("Icy-MetaData: 1\r\n");
     ret.append("Connection: close\r\n");
+    ret.append("User-agent: radio-proxy\r\n");
     ret.append("\r\n");
     return ret;
 }
@@ -152,10 +153,12 @@ void Radio_proxy::start() {
 
     std::cout << create_get_request() << "\n";
 
-    std::string curr_line = "";
+    std::string curr_line = tcp_socket.socket_getline();
     while (curr_line != "\r\n") {
+        for(char c : curr_line) {
+            std::cout << "[" << c << "]";
+        }
         curr_line = tcp_socket.socket_getline();
-        std::cout << curr_line << "\n";
     }
 
     std::cout << "radio-proxy started\n";
