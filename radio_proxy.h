@@ -9,7 +9,6 @@
 class Radio_proxy {
     
     unsigned flags;
-    
     std::string host;
     std::string resource;
     int port;
@@ -18,9 +17,7 @@ class Radio_proxy {
     
 public:
     Radio_proxy();
-    
     bool init(int argc, char* argv[]);
-    
     void start(); 
     
 private:
