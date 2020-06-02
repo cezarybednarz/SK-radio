@@ -155,10 +155,8 @@ void Radio_proxy::start() {
 
     std::string curr_line = tcp_socket.socket_getline();
     while (curr_line != "\r\n") {
-        for(char c : curr_line) {
-            std::cout << "[" << c << "]";
-        }
         curr_line = tcp_socket.socket_getline();
+        std::cout << curr_line << "\n";
     }
 
     std::cout << "radio-proxy started\n";

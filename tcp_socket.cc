@@ -36,7 +36,7 @@ void Tcp_socket::socket_connect() {
 }
 
 void Tcp_socket::socket_send_request(std::string content) {
-    if (write(sock, content.c_str(), sizeof(content).c_str()) < 0) {
+    if (write(sock, content.c_str(), content.size()) < 0) {
         syserr("write");
     }
 }
@@ -44,7 +44,9 @@ void Tcp_socket::socket_send_request(std::string content) {
 std::string Tcp_socket::socket_getline() {
     char *line_buf = nullptr;
     size_t line_buf_size = 0;
-    getline(&line_buf, &line_buf_size, fp);
+    if (getline(&line_buf, &line_buf_size, fp) < 0) {
+        syserr("getline");
+    }
     std::string ret(line_buf);
     return ret;
 }
