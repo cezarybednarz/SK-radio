@@ -119,7 +119,6 @@ bool Radio_proxy::init(int argc, char* argv[]) {
         std::cerr << "define host\n";
         return false;
     }
-
     if (!(flags & RESOURCE_DEFINED)) {
         std::cerr << "define resource\n";
         return false;
@@ -137,12 +136,50 @@ std::string Radio_proxy::create_get_request() {
     ret.append("GET " + resource + " HTTP/1.1\r\n");
     ret.append("Host: " + host + "\r\n");
     ret.append("Accept: */*\r\n");
-    ret.append("Icy-MetaData: 1\r\n");
+    if(metadata)
+        ret.append("Icy-MetaData: 1\r\n");
     ret.append("Connection: close\r\n");
     ret.append("User-agent: radio-proxy\r\n");
     ret.append("\r\n");
     return ret;
 }
+
+void Radio_proxy::read_header(Tcp_socket &tcp_socket) {
+    std::string curr_line = tcp_socket.socket_getline();
+    first_line_of_response = curr_line;
+    while (curr_line != "\r\n") {
+        curr_line = tcp_socket.socket_getline();
+        size_t first = 0, last = 0, lastlast = curr_line.size()-1;
+        for (size_t i = 0; i < curr_line.size(); i++) {
+            if (curr_line[i] == ':') {
+                first = i;
+                last = i + 1;
+                while (last < curr_line.size() && curr_line[last] == ' ') {
+                    last++;
+                }
+                break;
+            }
+        }
+        while (curr_line[lastlast] == '\r' || curr_line[lastlast] == '\n' || curr_line[lastlast] == ' ') {
+            lastlast--;
+        }
+        std::string key = curr_line.substr(0, first);
+        std::string value = curr_line.substr(last, lastlast-last+1);
+        for(char &c : key) {
+            c = (char)tolower(c);
+        }
+        header_info.insert(std::make_pair(key, value));
+    }
+}
+
+std::string Radio_proxy::read_metadata(Tcp_socket &tcp_socket) {
+    return "";
+}
+
+std::string Radio_proxy::read_data(Tcp_socket &tcp_socket) {
+    return "";
+}
+
 
 void Radio_proxy::start() {
     std::cout << "starting radio-proxy\n";
@@ -151,15 +188,14 @@ void Radio_proxy::start() {
     tcp_socket.socket_connect();
     tcp_socket.socket_send_request(create_get_request());
 
-    std::cout << create_get_request() << "\n";
+    read_header(tcp_socket);
 
-    std::string curr_line = tcp_socket.socket_getline();
-    while (curr_line != "\r\n") {
-        curr_line = tcp_socket.socket_getline();
-        std::cout << curr_line << "\n";
+    std::cout << "radio-proxy started, listening...\n";
+
+    while (true) {
+        read_metadata(tcp_socket);
+        read_data(tcp_socket);
     }
-
-    std::cout << "radio-proxy started\n";
 }
 
 int main(int argc, char* argv[]) {

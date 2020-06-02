@@ -2,6 +2,8 @@
 #include <cstdio>
 #include <string>
 #include <cstdlib>
+#include <map>
+#include <cctype>
 
 #include "constants.h"
 #include "tcp_socket.h"
@@ -19,12 +21,16 @@ class Radio_proxy {
     std::string port;
     bool metadata;
     int timeout;
-    
+
+    /* header info: */
+    std::string first_line_of_response;
+    std::multimap<std::string, std::string> header_info;
+
+
 public:
     Radio_proxy();
     bool init(int argc, char* argv[]);
     void start();
-    std::string create_get_request();
 
 private:
     bool parse_host(const std::string& host);
@@ -32,6 +38,12 @@ private:
     bool parse_port(const std::string& port);
     bool parse_metadata(const std::string& metadata);
     bool parse_timeout(const std::string& timeout);
+
+    std::string create_get_request();
+    void read_header(Tcp_socket &tcp_socket);
+    std::string read_metadata(Tcp_socket &tcp_socket);
+    std::string read_data(Tcp_socket &tcp_socket);
+
 };
 
 #endif /* RADIO_PROXY_H */
