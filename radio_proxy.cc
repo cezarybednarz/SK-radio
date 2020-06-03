@@ -36,7 +36,10 @@ bool Radio_proxy::parse_port(const std::string& _port) {
             return false;
     }
 
-    // parsowanie
+    for (char c : _port) {
+        if (!std::isdigit(c))
+            return false;
+    }
 
     port = _port;
     
@@ -76,12 +79,56 @@ bool Radio_proxy::parse_timeout(const std::string& _timeout) {
     return true;
 }
 
+bool Radio_proxy::parse_udp_port(const std::string& _udp_port) {
+    if (flags & UDP_PORT_DEFINED)
+        return false;
+    flags |= UDP_PORT_DEFINED;
+
+    for (char c : _udp_port) {
+        if (!std::isdigit(c))
+            return false;
+    }
+
+    udp_port = _udp_port;
+
+    return true;
+}
+
+bool Radio_proxy::parse_udp_multicast(const std::string& _udp_multicast) {
+    if (flags & UDP_MULTI_DEFINED)
+        return false;
+    flags |= UDP_MULTI_DEFINED;
+
+    // parsowanie
+
+    udp_multicast = _udp_multicast;
+
+    return true;
+}
+
+bool Radio_proxy::parse_udp_timeout(const std::string& _udp_timeout) {
+    if (flags & UDP_TIMEOUT_DEFINED)
+        return false;
+    flags |= UDP_TIMEOUT_DEFINED;
+
+    for (char c : _udp_timeout) {
+        if (!std::isdigit(c))
+            return false;
+    }
+
+    udp_timeout = std::stoi(_udp_timeout);
+
+    return true;
+}
+
+
 Radio_proxy::Radio_proxy() {
-    flags = 0;
-    
     /* default values */
+    flags = 0;
     metadata = false;
     timeout = 5;
+    udp_flags = false;
+    udp_timeout = 5;
 }
 
 bool Radio_proxy::init(int argc, char* argv[]) {
@@ -110,6 +157,18 @@ bool Radio_proxy::init(int argc, char* argv[]) {
             if (!parse_timeout(next))
                 return false;
         }
+        else if (curr == "-P") {
+            if (!parse_udp_port(next))
+                return false;
+        }
+        else if (curr == "-B") {
+            if (!parse_udp_multicast(next))
+                return false;
+        }
+        else if (curr == "-T") {
+            if (!parse_udp_timeout(next))
+                return false;
+        }
         else {
             return false;
         }
@@ -126,6 +185,15 @@ bool Radio_proxy::init(int argc, char* argv[]) {
     if (!(flags & PORT_DEFINED)) {
         std::cerr << "define port\n";
         return false;
+    }
+
+    /* A+B */
+    if ((flags & UDP_PORT_DEFINED) || (flags & UDP_MULTI_DEFINED) || (flags & UDP_TIMEOUT_DEFINED)) {
+        udp_flags = true;
+        if (flags & UDP_PORT_DEFINED) {
+            std::cerr << "define UDP port\n";
+            return false;
+        }
     }
 
     return true;
@@ -177,6 +245,9 @@ void Radio_proxy::read_header(Tcp_socket &tcp_socket) {
     icy_metaint = -1;
     if (header_info.find("icy-metaint") != header_info.end()) { /* icy-metadata exists */
         icy_metaint = std::stoi(header_info[ICY_METAINT]);
+        if (icy_metaint == 0) {
+            icy_metaint = -1;
+        }
     }
     if(icy_metaint == -1 && metadata) {
         syserr("no metatada sent by server, but metadata flag is set to true");
@@ -196,7 +267,7 @@ std::string Radio_proxy::read_metadata(Tcp_socket &tcp_socket) {
             first = i;
         }
     }
-    data = data.substr(0, first);
+    data = data.substr(0, first+1);
     return data;
 }
 
@@ -235,7 +306,7 @@ void Radio_proxy::start()
         }
 
         std::clock_t curr_time = std::clock();
-        delta_time = (curr_time-prev_time)/ (long double)CLOCKS_PER_SEC;
+        delta_time = (curr_time-prev_time) / (long double)CLOCKS_PER_SEC;
         prev_time = curr_time;
     }
 }

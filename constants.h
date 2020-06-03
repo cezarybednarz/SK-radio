@@ -5,11 +5,14 @@
 #include <string>
 
 /* runtime flags */
-#define HOST_DEFINED     (1 << 0) /* -h host */
-#define RESOURCE_DEFINED (1 << 1) /* -r resource */
-#define PORT_DEFINED     (1 << 2) /* -p port */
-#define METADATA_DEFINED (1 << 3) /* -m yes|no (optional) */
-#define TIMEOUT_DEFINED  (1 << 4) /* -t timeout (optional) */
+#define HOST_DEFINED        (1 << 0) /* -h host */
+#define RESOURCE_DEFINED    (1 << 1) /* -r resource */
+#define PORT_DEFINED        (1 << 2) /* -p port */
+#define METADATA_DEFINED    (1 << 3) /* -m yes|no (optional) */
+#define TIMEOUT_DEFINED     (1 << 4) /* -t timeout (optional) */
+#define UDP_PORT_DEFINED    (1 << 5) /* -P port */
+#define UDP_MULTI_DEFINED   (1 << 6) /* -B multi (optional) */
+#define UDP_TIMEOUT_DEFINED (1 << 7) /* -T timeout (optional) */
 
 
 const std::string OK_response1 = "ICY 200 OK";

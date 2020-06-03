@@ -15,18 +15,25 @@
 
 
 class Radio_proxy {
-    
+
     unsigned flags;
+
+    /* A */
     std::string host;
     std::string resource;
     std::string port;
     bool metadata;
     int timeout;
 
-    /* header info: */
+    /* A+B */
+    bool udp_flags;
+    std::string udp_port;
+    std::string udp_multicast;
+    int udp_timeout;
+
     std::string first_line_of_response;
     std::map<std::string, std::string> header_info;
-    int icy_metaint; /* '-1' if no icy-metaint defined in response */
+    int icy_metaint; /* '-1' if no icy-metaint defined in response (or if icy-metaint is equal 0) */
 
 public:
     Radio_proxy();
@@ -39,6 +46,9 @@ private:
     bool parse_port(const std::string& port);
     bool parse_metadata(const std::string& metadata);
     bool parse_timeout(const std::string& timeout);
+    bool parse_udp_port(const std::string& udp_port);
+    bool parse_udp_multicast(const std::string& udp_multicast);
+    bool parse_udp_timeout(const std::string& udp_timeout);
 
     std::string create_get_request();
     void read_header(Tcp_socket &tcp_socket);
