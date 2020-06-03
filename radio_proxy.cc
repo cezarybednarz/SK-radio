@@ -188,9 +188,16 @@ std::string Radio_proxy::read_data(Tcp_socket &tcp_socket) {
 }
 
 std::string Radio_proxy::read_metadata(Tcp_socket &tcp_socket) {
-    std::string bytes = tcp_socket.socket_getline();
-    bytes = bytes.substr(0, bytes.size() - 2);
-    return tcp_socket.socket_read_n_bytes(16 * std::stoi(bytes));
+    int bytes = 16 * (tcp_socket.socket_read_n_bytes(1)[0]);
+    std::string data = tcp_socket.socket_read_n_bytes(bytes);
+    size_t first = data.size() - 1;
+    for (size_t i = 0; i < data.size(); i++) {
+        if (data[i] == ';') {
+            first = i;
+        }
+    }
+    data = data.substr(0, first);
+    return data;
 }
 
 std::string Radio_proxy::read_continuous_data(Tcp_socket &tcp_socket, size_t buffer) {

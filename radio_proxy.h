@@ -46,7 +46,6 @@ private:
     std::string read_metadata(Tcp_socket &tcp_socket);
     std::string read_continuous_data(Tcp_socket &tcp_socket, size_t buffer);
 
-
 };
 
 #endif /* RADIO_PROXY_H */
