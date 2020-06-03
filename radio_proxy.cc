@@ -146,7 +146,11 @@ std::string Radio_proxy::create_get_request() {
 
 void Radio_proxy::read_header(Tcp_socket &tcp_socket) {
     std::string curr_line = tcp_socket.socket_getline();
-    first_line_of_response = curr_line;
+    curr_line = curr_line.substr(0, curr_line.size() - 2);
+    /* checking first line of response */
+    if (curr_line != OK_response1 && curr_line != OK_response2 && curr_line != OK_response3) {
+        syserr("response not 200 OK");
+    }
     while (curr_line != "\r\n") {
         curr_line = tcp_socket.socket_getline();
         size_t first = 0, last = 0, lastlast = curr_line.size()-1;
@@ -170,18 +174,32 @@ void Radio_proxy::read_header(Tcp_socket &tcp_socket) {
         }
         header_info.insert(std::make_pair(key, value));
     }
-}
-
-std::string Radio_proxy::read_metadata(Tcp_socket &tcp_socket) {
-    return "";
+    icy_metaint = -1;
+    if (header_info.find("icy-metaint") != header_info.end()) { /* icy-metadata exists */
+        icy_metaint = std::stoi(header_info[ICY_METAINT]);
+    }
+    if(icy_metaint == -1 && metadata) {
+        syserr("no metatada sent by server, but metadata flag is set to true");
+    }
 }
 
 std::string Radio_proxy::read_data(Tcp_socket &tcp_socket) {
-    return "";
+    return tcp_socket.socket_read_n_bytes(icy_metaint);
+}
+
+std::string Radio_proxy::read_metadata(Tcp_socket &tcp_socket) {
+    std::string bytes = tcp_socket.socket_getline();
+    bytes = bytes.substr(0, bytes.size() - 2);
+    return tcp_socket.socket_read_n_bytes(16 * std::stoi(bytes));
+}
+
+std::string Radio_proxy::read_continuous_data(Tcp_socket &tcp_socket, size_t buffer) {
+    return tcp_socket.socket_read_n_bytes(buffer);
 }
 
 
-void Radio_proxy::start() {
+void Radio_proxy::start()
+{
     std::cout << "starting radio-proxy\n";
 
     Tcp_socket tcp_socket(host, port);
@@ -192,9 +210,26 @@ void Radio_proxy::start() {
 
     std::cout << "radio-proxy started, listening...\n";
 
-    while (true) {
-        read_metadata(tcp_socket);
-        read_data(tcp_socket);
+    std::clock_t prev_time = std::clock();
+    long double delta_time = 0.0;
+
+    std::string data_bytes, metadata_bytes;
+
+    while (delta_time < (long double)timeout) {
+        if (icy_metaint != -1) { /* metadata sent by server */
+            data_bytes = read_data(tcp_socket);
+            metadata_bytes = read_metadata(tcp_socket);
+            std::cout << data_bytes;
+            std::cerr << metadata_bytes;
+        }
+        else {
+            data_bytes = read_continuous_data(tcp_socket, CONTINUOUS_BUFFER);
+            std::cout << data_bytes;
+        }
+
+        std::clock_t curr_time = std::clock();
+        delta_time = (curr_time-prev_time)/ (long double)CLOCKS_PER_SEC;
+        prev_time = curr_time;
     }
 }
 

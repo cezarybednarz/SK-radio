@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <map>
 #include <cctype>
+#include <ctime>
 
 #include "constants.h"
 #include "tcp_socket.h"
@@ -24,8 +25,8 @@ class Radio_proxy {
 
     /* header info: */
     std::string first_line_of_response;
-    std::multimap<std::string, std::string> header_info;
-
+    std::map<std::string, std::string> header_info;
+    int icy_metaint; /* '-1' if no icy-metaint defined in response */
 
 public:
     Radio_proxy();
@@ -41,8 +42,10 @@ private:
 
     std::string create_get_request();
     void read_header(Tcp_socket &tcp_socket);
-    std::string read_metadata(Tcp_socket &tcp_socket);
     std::string read_data(Tcp_socket &tcp_socket);
+    std::string read_metadata(Tcp_socket &tcp_socket);
+    std::string read_continuous_data(Tcp_socket &tcp_socket, size_t buffer);
+
 
 };
 

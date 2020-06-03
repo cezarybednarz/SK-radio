@@ -58,3 +58,7 @@ std::string Tcp_socket::socket_read_n_bytes(size_t n) {
     }
     return ret;
 }
+
+char Tcp_socket::read_char() {
+    return fgetc(fp);
+}
