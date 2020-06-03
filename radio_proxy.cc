@@ -275,7 +275,6 @@ std::string Radio_proxy::read_continuous_data(Tcp_socket &tcp_socket, size_t buf
     return tcp_socket.socket_read_n_bytes(buffer);
 }
 
-
 void Radio_proxy::start()
 {
     std::cout << "starting radio-proxy\n";

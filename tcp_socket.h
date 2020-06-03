@@ -15,6 +15,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <cstring>
+#include <poll.h>
 
 #include "err.h"
 
