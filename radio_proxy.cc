@@ -188,12 +188,8 @@ bool Radio_proxy::init(int argc, char* argv[]) {
     }
 
     /* A+B */
-    if ((flags & UDP_PORT_DEFINED) || (flags & UDP_MULTI_DEFINED) || (flags & UDP_TIMEOUT_DEFINED)) {
+    if (flags & UDP_PORT_DEFINED) {
         udp_flags = true;
-        if (flags & UDP_PORT_DEFINED) {
-            std::cerr << "define UDP port\n";
-            return false;
-        }
     }
 
     return true;
@@ -204,8 +200,12 @@ std::string Radio_proxy::create_get_request() {
     ret.append("GET " + resource + " HTTP/1.1\r\n");
     ret.append("Host: " + host + "\r\n");
     ret.append("Accept: */*\r\n");
-    if(metadata)
+    if(metadata) {
         ret.append("Icy-MetaData: 1\r\n");
+    }
+    else {
+        ret.append("Icy-MetaData: 0\r\n");
+    }
     ret.append("Connection: close\r\n");
     ret.append("User-agent: radio-proxy\r\n");
     ret.append("\r\n");

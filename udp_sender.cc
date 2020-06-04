@@ -19,20 +19,20 @@ void Udp_sender::socket_connect() {
         syserr("setsockopt (SO_REUSEADDR");
     
     /* set reusing port */
-    int optval_port = 1;
-    if (setsockopt(sock, SOL_SOCKET, SO_REUSEPORT, &optval_port, sizeof optval_port) < 0)
+    optval = 1;
+    if (setsockopt(sock, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof optval) < 0)
         syserr("setsockopt (SO_REUSEPORT)");
     
     /* activate multicast sending */
     if (multicast) {
         /* activating broadcasting */
-        int optval_broadcast = 1;
-        if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &optval_broadcast, sizeof optval_broadcast) < 0)
+        optval = 1;
+        if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &optval, sizeof optval) < 0)
             syserr("setsockopt (SO_BROADCAST)");
 
         /* setting TTL for group datagrams */
-        int optval_ttl = TTL_VALUE;
-        if (setsockopt(sock, IPPROTO_IP, IP_MULTICAST_TTL, (void *) &optval_ttl, sizeof optval_ttl) < 0)
+        optval = TTL_VALUE;
+        if (setsockopt(sock, IPPROTO_IP, IP_MULTICAST_TTL, (void *) &optval, sizeof optval) < 0)
             syserr("setsockopt (IP_MULTICAST_TTL)");
     }
     
