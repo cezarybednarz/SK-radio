@@ -188,8 +188,12 @@ bool Radio_proxy::init(int argc, char* argv[]) {
     }
 
     /* A+B */
-    if (flags & UDP_PORT_DEFINED) {
+    if ((flags & UDP_PORT_DEFINED) || (flags & UDP_MULTI_DEFINED) || (flags & UDP_TIMEOUT_DEFINED)) {
         udp_flags = true;
+        if (flags & UDP_PORT_DEFINED) {
+            std::cerr << "define UDP port\n";
+            return false;
+        }
     }
 
     return true;
@@ -286,9 +290,6 @@ void Radio_proxy::start()
     read_header(tcp_socket);
 
     std::cout << "radio-proxy started, listening...\n";
-
-    std::clock_t prev_time = std::clock();
-    long double delta_time = 0.0;
 
     std::string data_bytes, metadata_bytes;
 
