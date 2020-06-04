@@ -51,4 +51,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/radio-proxy.dir/DependInfo.cmake"
+  "CMakeFiles/radio-client.dir/DependInfo.cmake"
   )

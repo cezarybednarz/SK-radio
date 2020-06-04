@@ -123,6 +123,19 @@ radio-proxy/fast:
 	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/build
 .PHONY : radio-proxy/fast
 
+#=============================================================================
+# Target rules for targets named radio-client
+
+# Build rule for target.
+radio-client: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 radio-client
+.PHONY : radio-client
+
+# fast build rule for target.
+radio-client/fast:
+	$(MAKE) -f CMakeFiles/radio-client.dir/build.make CMakeFiles/radio-client.dir/build
+.PHONY : radio-client/fast
+
 err.o: err.cc.o
 
 .PHONY : err.o
@@ -149,6 +162,33 @@ err.s: err.cc.s
 err.cc.s:
 	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/err.cc.s
 .PHONY : err.cc.s
+
+radio_client.o: radio_client.cc.o
+
+.PHONY : radio_client.o
+
+# target to build an object file
+radio_client.cc.o:
+	$(MAKE) -f CMakeFiles/radio-client.dir/build.make CMakeFiles/radio-client.dir/radio_client.cc.o
+.PHONY : radio_client.cc.o
+
+radio_client.i: radio_client.cc.i
+
+.PHONY : radio_client.i
+
+# target to preprocess a source file
+radio_client.cc.i:
+	$(MAKE) -f CMakeFiles/radio-client.dir/build.make CMakeFiles/radio-client.dir/radio_client.cc.i
+.PHONY : radio_client.cc.i
+
+radio_client.s: radio_client.cc.s
+
+.PHONY : radio_client.s
+
+# target to generate assembly for a file
+radio_client.cc.s:
+	$(MAKE) -f CMakeFiles/radio-client.dir/build.make CMakeFiles/radio-client.dir/radio_client.cc.s
+.PHONY : radio_client.cc.s
 
 radio_proxy.o: radio_proxy.cc.o
 
@@ -238,11 +278,15 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... radio-proxy"
 	@echo "... edit_cache"
+	@echo "... radio-proxy"
+	@echo "... radio-client"
 	@echo "... err.o"
 	@echo "... err.i"
 	@echo "... err.s"
+	@echo "... radio_client.o"
+	@echo "... radio_client.i"
+	@echo "... radio_client.s"
 	@echo "... radio_proxy.o"
 	@echo "... radio_proxy.i"
 	@echo "... radio_proxy.s"
