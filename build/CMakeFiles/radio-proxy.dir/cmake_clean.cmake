@@ -2,6 +2,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/radio-proxy.dir/radio_proxy.cc.o"
   "CMakeFiles/radio-proxy.dir/tcp_socket.cc.o"
   "CMakeFiles/radio-proxy.dir/err.cc.o"
+  "CMakeFiles/radio-proxy.dir/udp_sender.cc.o"
   "radio-proxy.pdb"
   "radio-proxy"
 )
