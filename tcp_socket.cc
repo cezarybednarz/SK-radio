@@ -1,8 +1,9 @@
 
 #include "tcp_socket.h"
 
-Tcp_socket::Tcp_socket(const std::string& addr, const std::string& port)
- : connection_addr(const_cast<char*>(addr.c_str())),connection_port(const_cast<char*>(port.c_str()))
+Tcp_socket::Tcp_socket(const std::string& addr, const std::string& port, int timeout)
+ : connection_addr(const_cast<char*>(addr.c_str())),connection_port(const_cast<char*>(port.c_str())),
+   timeout_in_seconds(timeout)
 { }
 
 void Tcp_socket::socket_connect() {
@@ -33,6 +34,11 @@ void Tcp_socket::socket_connect() {
     fp = fdopen(sock, "r");
     if (!fp)
         syserr("fdopen");
+        
+	struct timeval tv;
+	tv.tv_sec = timeout_in_seconds;
+	tv.tv_usec = 0;
+	setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
 }
 
 void Tcp_socket::socket_send_request(std::string content) {
@@ -45,7 +51,7 @@ std::string Tcp_socket::socket_getline() {
     char *line_buf = nullptr;
     size_t line_buf_size = 0;
     if (getline(&line_buf, &line_buf_size, fp) < 0) {
-        syserr("getline");
+        syserr("getline (timeout)");
     }
     std::string ret(line_buf);
     return ret;
@@ -54,11 +60,17 @@ std::string Tcp_socket::socket_getline() {
 std::string Tcp_socket::socket_read_n_bytes(size_t n) {
     std::string ret;
     for (size_t i = 0; i < n; i++) {
-        ret.push_back(fgetc(fp));
+        int c = fgetc(fp);
+        if (c < 0 || c == EOF) 
+            syserr("read (timeout)");
+        ret.push_back(c);
     }
     return ret;
 }
 
 char Tcp_socket::read_char() {
-    return fgetc(fp);
+    int c = fgetc(fp);
+    if (c < 0 || c == EOF) 
+        syserr("read (timeout)");
+    return c;
 }

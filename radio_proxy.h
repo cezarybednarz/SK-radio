@@ -5,6 +5,7 @@
 #include <map>
 #include <cctype>
 #include <ctime>
+#include <errno.h>
 
 #include "constants.h"
 #include "tcp_socket.h"

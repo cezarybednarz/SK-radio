@@ -209,7 +209,7 @@ void Radio_proxy::start()
 {
     std::cout << "starting radio-proxy\n";
 
-    Tcp_socket tcp_socket(host, port);
+    Tcp_socket tcp_socket(host, port, timeout);
     tcp_socket.socket_connect();
     tcp_socket.socket_send_request(create_get_request());
 
@@ -222,7 +222,7 @@ void Radio_proxy::start()
 
     std::string data_bytes, metadata_bytes;
 
-    while (delta_time < (long double)timeout) {
+    while (errno >= 0) {
         if (icy_metaint != -1) { /* metadata sent by server */
             data_bytes = read_data(tcp_socket);
             metadata_bytes = read_metadata(tcp_socket);
@@ -233,10 +233,6 @@ void Radio_proxy::start()
             data_bytes = read_continuous_data(tcp_socket, CONTINUOUS_BUFFER);
             std::cout << data_bytes;
         }
-
-        std::clock_t curr_time = std::clock();
-        delta_time = (curr_time-prev_time)/ (long double)CLOCKS_PER_SEC;
-        prev_time = curr_time;
     }
 }
 
