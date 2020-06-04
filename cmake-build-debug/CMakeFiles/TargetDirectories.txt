@@ -1,0 +1,3 @@
+/home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/radio-proxy.dir
+/home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/edit_cache.dir

@@ -1,5 +1,5 @@
-#ifndef TCP_SOCKET_H
-#define TCP_SOCKET_H
+#ifndef UDP_SENDER_H
+#define UDP_SENDER_H
 
 #include <sstream>
 #include <iostream>
@@ -15,25 +15,29 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <cstring>
-#include <poll.h>
 
 #include "err.h"
+#include "constants.h"
 
-class Tcp_socket {
-
+class Udp_sender {
+    
     int sock;
+    
     char* connection_addr;
     char* connection_port;
     int timeout_in_seconds;
-    FILE *fp;
-
+    bool multicast;
+    
+    ip_mreq ipmreq;
+    sockaddr_in local_addr;
+    sockaddr_in remote_addr;
+    
 public:
-    Tcp_socket(const std::string& addr, const std::string& port, int timeout);
+    
+    Udp_sender(std::string addr, std::string port, int timeout, bool multi);
     void socket_connect();
-    void socket_send_request(std::string content);
-    std::string socket_getline();
-    std::string socket_read_n_bytes(size_t n);
-    char read_char();
+    void send_message(std::string message);
+    void send_message_direct(std::string message, const sockaddr_in &dst_addr);
 };
 
-#endif //TCP_SOCKET_H
+#endif /* UDP_SENDER_H */

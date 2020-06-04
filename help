@@ -1,0 +1,8 @@
+(A)
+./radio-proxy -h waw02-03.ic.smcdn.pl -r /t050-1.mp3 -p 8000 >waw.mp3
+./radio-proxy -h ant-waw-01.cdn.eurozet.pl -p 8602 -r / -m yes >ant.mp3 2>meta.txt
+./radio-proxy -p 8000 -h waw02-03.ic.smcdn.pl -r /t043-1.mp3 -m no | mplayer -cache 2048 -
+
+(B)
+./radio-proxy -h waw02-03.ic.smcdn.pl -r /t050-1.mp3 -p 8000 -P 10000 -t 10
+./radio-proxy -h ant-waw-01.cdn.eurozet.pl -p 8602 -r / -B 239.10.11.12 -P 54321

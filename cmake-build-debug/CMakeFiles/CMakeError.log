@@ -1,0 +1,55 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_e4614/fast 
+/usr/bin/make -f CMakeFiles/cmTC_e4614.dir/build.make CMakeFiles/cmTC_e4614.dir/build
+make[1]: Wejście do katalogu '/home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_e4614.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++     -o CMakeFiles/cmTC_e4614.dir/CheckSymbolExists.cxx.o -c /home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+Linking CXX executable cmTC_e4614
+/opt/clion-2019.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e4614.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_e4614.dir/CheckSymbolExists.cxx.o  -o cmTC_e4614 
+CMakeFiles/cmTC_e4614.dir/CheckSymbolExists.cxx.o: In function `main':
+CheckSymbolExists.cxx:(.text+0x1b): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_e4614.dir/build.make:86: recipe for target 'cmTC_e4614' failed
+make[1]: *** [cmTC_e4614] Error 1
+make[1]: Opuszczenie katalogu '/home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_e4614/fast' failed
+make: *** [cmTC_e4614/fast] Error 2
+
+File /home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_fdb2d/fast 
+/usr/bin/make -f CMakeFiles/cmTC_fdb2d.dir/build.make CMakeFiles/cmTC_fdb2d.dir/build
+make[1]: Wejście do katalogu '/home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_fdb2d.dir/CheckFunctionExists.cxx.o
+/usr/bin/c++    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_fdb2d.dir/CheckFunctionExists.cxx.o -c /home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/CheckLibraryExists/CheckFunctionExists.cxx
+Linking CXX executable cmTC_fdb2d
+/opt/clion-2019.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fdb2d.dir/link.txt --verbose=1
+/usr/bin/c++   -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_fdb2d.dir/CheckFunctionExists.cxx.o  -o cmTC_fdb2d -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_fdb2d.dir/build.make:86: recipe for target 'cmTC_fdb2d' failed
+make[1]: *** [cmTC_fdb2d] Error 1
+make[1]: Opuszczenie katalogu '/home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_fdb2d/fast' failed
+make: *** [cmTC_fdb2d/fast] Error 2
+
+
