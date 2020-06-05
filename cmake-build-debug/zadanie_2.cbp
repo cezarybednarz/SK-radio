@@ -135,9 +135,11 @@
 		</Unit>
 		<Unit filename="/home/cezary/Dokumenty/SK/SK-radio/err.cc">
 			<Option target="radio-proxy"/>
+			<Option target="radio-client"/>
 		</Unit>
 		<Unit filename="/home/cezary/Dokumenty/SK/SK-radio/err.h">
 			<Option target="radio-proxy"/>
+			<Option target="radio-client"/>
 		</Unit>
 		<Unit filename="/home/cezary/Dokumenty/SK/SK-radio/radio_client.cc">
 			<Option target="radio-client"/>
@@ -159,9 +161,11 @@
 		</Unit>
 		<Unit filename="/home/cezary/Dokumenty/SK/SK-radio/udp_socket.cc">
 			<Option target="radio-proxy"/>
+			<Option target="radio-client"/>
 		</Unit>
 		<Unit filename="/home/cezary/Dokumenty/SK/SK-radio/udp_socket.h">
 			<Option target="radio-proxy"/>
+			<Option target="radio-client"/>
 		</Unit>
 		<Unit filename="/home/cezary/Dokumenty/SK/SK-radio/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

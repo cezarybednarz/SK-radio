@@ -112,15 +112,24 @@ Radio_client::Radio_client() {
 void Radio_client::start() {
     std::cout << "Starting radio-client\n";
 
-    Udp_socket udp_socket;
-
-
+    Udp_socket udp_socket(udp_port, "", timeout);
+    udp_socket.socket_connect();
 
 
     std::cout << "radio-client started...\n";
 
-    while(errno >= 0) {
+    /* convert std::string host to sockaddr proxy_sockaddr */
+    struct sockaddr_in proxy_addr;
+    proxy_addr.sin_family = AF_INET;
+    proxy_addr.sin_port = htons(std::stoi(udp_port));
+    inet_pton(AF_INET, host.c_str(), &proxy_addr.sin_addr);
+    int proxy_addrlen = sizeof(struct sockaddr_in);
+    struct sockaddr *proxy_sockaddr = reinterpret_cast<sockaddr*>(&proxy_addr);
 
+    while (errno >= 0) {
+        udp_socket.send_message_direct("siema", *proxy_sockaddr, proxy_addrlen);
+        sleep(1000);
+        auto addr_pair =  udp_socket.receive_message();
     }
 }
 
@@ -135,7 +144,7 @@ void send_keepalive() {
 int main(int argc, char* argv[]) {
     Radio_client radio_client;
     if (!radio_client.init(argc, argv)) {
-        syserr("Radio_client::init()")
+        syserr("Radio_client::init()");
     }
     else {
         radio_client.start();

@@ -20,7 +20,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -std=c++17 -g 
 
 # tutaj wpisywać
 set(SOURCE_FILES_PROXY radio_proxy.cc constants.h tcp_socket.cc tcp_socket.h err.h err.cc udp_socket.cc udp_socket.h)
-set(SOURCE_FILES_CLIENT radio_client.cc radio_client.h)
+set(SOURCE_FILES_CLIENT radio_client.cc radio_client.h udp_socket.cc udp_socket.h err.h err.cc)
 
 
 add_executable(radio-proxy ${SOURCE_FILES_PROXY})

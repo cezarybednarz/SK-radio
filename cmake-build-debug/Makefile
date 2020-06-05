@@ -143,6 +143,7 @@ err.o: err.cc.o
 # target to build an object file
 err.cc.o:
 	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/err.cc.o
+	$(MAKE) -f CMakeFiles/radio-client.dir/build.make CMakeFiles/radio-client.dir/err.cc.o
 .PHONY : err.cc.o
 
 err.i: err.cc.i
@@ -152,6 +153,7 @@ err.i: err.cc.i
 # target to preprocess a source file
 err.cc.i:
 	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/err.cc.i
+	$(MAKE) -f CMakeFiles/radio-client.dir/build.make CMakeFiles/radio-client.dir/err.cc.i
 .PHONY : err.cc.i
 
 err.s: err.cc.s
@@ -161,6 +163,7 @@ err.s: err.cc.s
 # target to generate assembly for a file
 err.cc.s:
 	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/err.cc.s
+	$(MAKE) -f CMakeFiles/radio-client.dir/build.make CMakeFiles/radio-client.dir/err.cc.s
 .PHONY : err.cc.s
 
 radio_client.o: radio_client.cc.o
@@ -251,6 +254,7 @@ udp_socket.o: udp_socket.cc.o
 # target to build an object file
 udp_socket.cc.o:
 	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/udp_socket.cc.o
+	$(MAKE) -f CMakeFiles/radio-client.dir/build.make CMakeFiles/radio-client.dir/udp_socket.cc.o
 .PHONY : udp_socket.cc.o
 
 udp_socket.i: udp_socket.cc.i
@@ -260,6 +264,7 @@ udp_socket.i: udp_socket.cc.i
 # target to preprocess a source file
 udp_socket.cc.i:
 	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/udp_socket.cc.i
+	$(MAKE) -f CMakeFiles/radio-client.dir/build.make CMakeFiles/radio-client.dir/udp_socket.cc.i
 .PHONY : udp_socket.cc.i
 
 udp_socket.s: udp_socket.cc.s
@@ -269,6 +274,7 @@ udp_socket.s: udp_socket.cc.s
 # target to generate assembly for a file
 udp_socket.cc.s:
 	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/udp_socket.cc.s
+	$(MAKE) -f CMakeFiles/radio-client.dir/build.make CMakeFiles/radio-client.dir/udp_socket.cc.s
 .PHONY : udp_socket.cc.s
 
 # Help Target

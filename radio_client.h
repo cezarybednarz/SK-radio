@@ -1,7 +1,6 @@
 #ifndef RADIO_CLIENT_H
 #define RADIO_CLIENT_H
 
-
 #include <sstream>
 #include <iostream>
 #include <sys/socket.h>
@@ -39,13 +38,14 @@ public:
     bool parse_tcp_port(const std::string& port);
     bool parse_timeout(const std::string& metadata);
 
+    /*
     void send_discover();
     void send_keepalive();
 
     void receive_iam();
     void receive_audio();
     void receive_metadata();
-
+*/
 };
 
 #endif //RADIO_CLIENT_H

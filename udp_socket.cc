@@ -71,7 +71,9 @@ std::pair <sockaddr, socklen_t> Udp_socket::receive_message() {
     return std::make_pair(src_addr, addrlen);
 }
 
-void Udp_socket::send_message_direct(std::string message, const sockaddr &dst_addr, socklen_t addrlen) {
+void Udp_socket::send_message_direct(std::string message, sockaddr &dst_addr, socklen_t addrlen) {
+    printf("ip do wyslania: %s\n", inet_ntoa(((struct sockaddr_in *) &dst_addr)->sin_addr));
+
     memset(buffer, 0, BSIZE);
     strncpy(buffer, message.c_str(), BSIZE);
     size_t length = strnlen(buffer, BSIZE);
