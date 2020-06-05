@@ -35,5 +35,9 @@ const int BSIZE = (1 << 16);
 #define AUDIO     4
 #define METADATA  6
 
+/* poll groups */
+#define TCP_POLL 0
+#define UDP_POLL 1
+
 
 #endif //ZADANIE_2_CONSTANTS_H

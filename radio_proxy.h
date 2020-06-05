@@ -5,11 +5,13 @@
 #include <map>
 #include <cctype>
 #include <ctime>
-#include <errno.h>
+#include <cerrno>
+#include <poll.h>
 
 #include "constants.h"
 #include "tcp_socket.h"
 #include "err.h"
+#include "udp_socket.h"
 
 #ifndef RADIO_PROXY_H
 #define RADIO_PROXY_H
@@ -50,6 +52,9 @@ private:
     bool parse_udp_port(const std::string& udp_port);
     bool parse_udp_multicast(const std::string& udp_multicast);
     bool parse_udp_timeout(const std::string& udp_timeout);
+
+    void no_udp_casting(Tcp_socket &tcp_socket); /* main A loop */
+    void udp_casting(Tcp_socket &tcp_socket); /* main A+B loop */
 
     std::string create_get_request();
     void read_header(Tcp_socket &tcp_socket);

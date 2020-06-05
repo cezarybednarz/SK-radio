@@ -69,9 +69,6 @@ std::string Tcp_socket::socket_read_n_bytes(size_t n) {
     return ret;
 }
 
-char Tcp_socket::read_char() {
-    int c = fgetc(fp);
-    if (c < 0 || c == EOF) 
-        syserr("read (timeout)");
-    return c;
+int Tcp_socket::get_socket() {
+    return sock;
 }

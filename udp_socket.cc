@@ -99,3 +99,6 @@ std::tuple<uint16_t, uint16_t, std::string> Udp_socket::read_datagram(char *data
     std::string message(data + 4);
     return std::make_tuple(type, length, message);
 }
+int Udp_socket::get_socket() {
+    return sock;
+}

@@ -33,7 +33,7 @@ public:
     void socket_send_request(std::string content);
     std::string socket_getline();
     std::string socket_read_n_bytes(size_t n);
-    char read_char();
+    int get_socket();
 };
 
 #endif //TCP_SOCKET_H

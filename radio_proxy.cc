@@ -276,25 +276,50 @@ std::string Radio_proxy::read_continuous_data(Tcp_socket &tcp_socket, size_t buf
     return tcp_socket.socket_read_n_bytes(buffer);
 }
 
-void Radio_proxy::start()
-{
-    std::cout << "starting radio-proxy\n";
+/* task A (main loop)*/
+void Radio_proxy::no_udp_casting(Tcp_socket &tcp_socket) {
 
-    Tcp_socket tcp_socket(host, port, timeout);
-    tcp_socket.socket_connect();
-    tcp_socket.socket_send_request(create_get_request());
+    std::string data_bytes, metadata_bytes;
+    while (errno >= 0) {
+        if (icy_metaint != -1) { /* metadata sent by server */
+            data_bytes = read_data(tcp_socket);
+            metadata_bytes = read_metadata(tcp_socket);
+            std::cout << data_bytes;
+            std::cerr << metadata_bytes;
+        }
+        else {
+            data_bytes = read_continuous_data(tcp_socket, CONTINUOUS_BUFFER);
+            std::cout << data_bytes;
+        }
+    }
+}
+
+/* task A+B (main loop) */
+void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
 
     Udp_socket udp_socket(udp_port, udp_multicast, udp_timeout);
     udp_socket.socket_connect();
 
-    read_header(tcp_socket);
+    struct pollfd group[2];
 
-    std::cout << "radio-proxy started, listening...\n";
+    /* initialise TCP poll group */
+    group[TCP_POLL].fd = tcp_socket.get_socket();
+    group[TCP_POLL].events = (POLLIN | POLLOUT | POLLERR);
+    group[TCP_POLL].revents = 0;
+
+    /* initialise UDP poll group */
+    group[UDP_POLL].fd = udp_socket.get_socket();
+    group[UDP_POLL].events = (POLLIN | POLLOUT | POLLERR);
+    group[UDP_POLL].revents = 0;
 
     std::string data_bytes, metadata_bytes;
 
-    if (!udp_flags) { /* A */
-        while (errno >= 0) {
+    while (errno >= 0) {
+        int ret = poll(group, 2, udp_timeout);
+        if (ret <= 0)
+            syserr("poll");
+
+        if (ret == TCP_POLL) { /* receiving radio signal */
             if (icy_metaint != -1) { /* metadata sent by server */
                 data_bytes = read_data(tcp_socket);
                 metadata_bytes = read_metadata(tcp_socket);
@@ -306,19 +331,42 @@ void Radio_proxy::start()
                 std::cout << data_bytes;
             }
         }
-    }
-    else { /* A+B */
-        struct pollfd group;
-
-        while (errno >= 0) {
+        else if (ret == UDP_POLL){ /* receiving signal from client */
             auto addr_pair = udp_socket.receive_message();
             auto client_tuple = Udp_socket::read_datagram(udp_socket.get_buffer());
             uint16_t type = std::get<0>(client_tuple);
             uint16_t length = std::get<1>(client_tuple);
             std::string data = std::get<2>(client_tuple);
             std::cout << type << " " << length << " " << data << "\n";
-            //udp_socket.send_message_direct("XDD\n", addr_pair.first, addr_pair.second);
         }
+        else {
+            syserr("poll (unexpected value)");
+        }
+
+
+
+        //udp_socket.send_message_direct("XDD\n", addr_pair.first, addr_pair.second);
+    }
+}
+
+
+void Radio_proxy::start()
+{
+    std::cout << "starting radio-proxy\n";
+
+    Tcp_socket tcp_socket(host, port, timeout);
+    tcp_socket.socket_connect();
+    tcp_socket.socket_send_request(create_get_request());
+
+    read_header(tcp_socket);
+
+    std::cout << "radio-proxy started, listening...\n";
+
+    if (!udp_flags) { /* A */
+        no_udp_casting(tcp_socket);
+    }
+    else { /* A+B */
+        udp_casting(tcp_socket);
     }
 }
 

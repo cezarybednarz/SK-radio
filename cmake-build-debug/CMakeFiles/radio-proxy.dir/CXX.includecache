@@ -33,7 +33,9 @@ cctype
 -
 ctime
 -
-errno.h
+cerrno
+-
+poll.h
 -
 constants.h
 /home/cezary/Dokumenty/SK/SK-radio/constants.h
@@ -41,6 +43,8 @@ tcp_socket.h
 /home/cezary/Dokumenty/SK/SK-radio/tcp_socket.h
 err.h
 /home/cezary/Dokumenty/SK/SK-radio/err.h
+udp_socket.h
+/home/cezary/Dokumenty/SK/SK-radio/udp_socket.h
 
 /home/cezary/Dokumenty/SK/SK-radio/tcp_socket.h
 sstream
