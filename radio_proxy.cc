@@ -308,9 +308,16 @@ void Radio_proxy::start()
         }
     }
     else { /* A+B */
+        struct pollfd group;
+
         while (errno >= 0) {
             auto addr_pair = udp_socket.receive_message();
-            udp_socket.send_message_direct("XDD", addr_pair.first, addr_pair.second);
+            auto client_tuple = Udp_socket::read_datagram(udp_socket.get_buffer());
+            uint16_t type = std::get<0>(client_tuple);
+            uint16_t length = std::get<1>(client_tuple);
+            std::string data = std::get<2>(client_tuple);
+            std::cout << type << " " << length << " " << data << "\n";
+            //udp_socket.send_message_direct("XDD\n", addr_pair.first, addr_pair.second);
         }
     }
 }

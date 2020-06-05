@@ -115,7 +115,6 @@ void Radio_client::start() {
     Udp_socket udp_socket(udp_port, "", timeout);
     udp_socket.socket_connect();
 
-
     std::cout << "radio-client started...\n";
 
     /* convert std::string host to sockaddr proxy_sockaddr */
@@ -126,10 +125,16 @@ void Radio_client::start() {
     int proxy_addrlen = sizeof(struct sockaddr_in);
     struct sockaddr *proxy_sockaddr = reinterpret_cast<sockaddr*>(&proxy_addr);
 
+    /* send DISCOVER */
+    std::cout << "sending DISCOVER\n";
+    udp_socket.send_message_direct(Udp_socket::create_datagram(DISCOVER, 0, ""), *proxy_sockaddr, proxy_addrlen);
+
     while (errno >= 0) {
-        udp_socket.send_message_direct("siema", *proxy_sockaddr, proxy_addrlen);
-        sleep(1000);
-        auto addr_pair =  udp_socket.receive_message();
+        /* send KEEPALIVE */
+        std::cout << "sending KEEPALIVE\n";
+        udp_socket.send_message_direct(Udp_socket::create_datagram(KEEPALIVE, 0, ""), *proxy_sockaddr, proxy_addrlen);
+        usleep(3500000);
+        //auto addr_pair =  udp_socket.receive_message();
     }
 }
 

@@ -64,16 +64,10 @@ std::pair <sockaddr, socklen_t> Udp_socket::receive_message() {
     memset(buffer, 0, BSIZE);
     if (recvfrom(sock, &buffer, BSIZE, 0, &src_addr, &addrlen) < 0)
         syserr("recvfrom");
-
-    printf("Request from: %s\n", inet_ntoa(((struct sockaddr_in *) &src_addr)->sin_addr));
-    printf("otrzymałem %s", buffer);
-
     return std::make_pair(src_addr, addrlen);
 }
 
 void Udp_socket::send_message_direct(std::string message, sockaddr &dst_addr, socklen_t addrlen) {
-    printf("ip do wyslania: %s\n", inet_ntoa(((struct sockaddr_in *) &dst_addr)->sin_addr));
-
     memset(buffer, 0, BSIZE);
     strncpy(buffer, message.c_str(), BSIZE);
     size_t length = strnlen(buffer, BSIZE);
