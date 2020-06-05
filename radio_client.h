@@ -21,10 +21,22 @@
 #include "err.h"
 
 class Radio_client {
+
+
+
+
 public:
     Radio_client();
     void init();
     void start();
+
+    void send_discover();
+    void send_keepalive();
+
+    void receive_iam();
+    void receive_audio();
+    void receive_metadata();
+
 };
 
 #endif //RADIO_CLIENT_H

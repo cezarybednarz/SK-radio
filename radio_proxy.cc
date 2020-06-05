@@ -314,7 +314,8 @@ void Radio_proxy::start()
     }
     else { /* A+B */
         while (errno >= 0) {
-            udp_socket.receive_message();
+            auto addr_pair = udp_socket.receive_message();
+            udp_socket.send_message_direct("XDD", addr_pair.first, addr_pair.second);
         }
     }
 }

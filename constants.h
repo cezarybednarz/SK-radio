@@ -23,4 +23,12 @@ const size_t CONTINUOUS_BUFFER = (1 << 11);
 const int TTL_VALUE = 4;
 const int BSIZE = (1 << 16);
 
+/* datagram types */
+#define DISCOVER  1
+#define IAM       2
+#define KEEPALIVE 3
+#define AUDIO     4
+#define METADATA  6
+
+
 #endif //ZADANIE_2_CONSTANTS_H

@@ -36,17 +36,16 @@ class Udp_socket {
     char buffer[BSIZE];
     struct ip_mreq ip_mreq;
     sockaddr_in local_addr;
-    sockaddr_in remote_addr;
-    
+
+    std::vector<std::tuple<sockaddr, socklen_t, int>> clients; /* address, length of address, timestamp of last connection */
+
 public:
     
     Udp_socket(std::string port, std::string multi, int timeout);
     void socket_connect();
-    void receive_message();
-    void send_message(std::string message);
-    void send_message_direct(std::string message, const sockaddr_in &dst_addr, socklen_t addrlen);
-
-    char *get_buffer();
+    std::pair<sockaddr, socklen_t> receive_message();
+    void send_message_direct(std::string message, const sockaddr &dst_addr, socklen_t addrlen);
+    char *get_buffer(); /* message recieved from last receive_message() */
 };
 
 #endif /* UDP_SENDER_H */

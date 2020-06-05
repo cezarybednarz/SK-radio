@@ -3,14 +3,8 @@
 
 Udp_socket::Udp_socket(std::string port, std::string multi, int timeout)
  : connection_port(const_cast<char*>(port.c_str())), connection_multi(const_cast<char*>(multi.c_str())),
-   timeout_in_seconds(timeout)
-{
-    if (multi != "") {
-        multicast = true;
-    }
-    else {
-        multicast = false;
-    }
+   timeout_in_seconds(timeout) {
+    multicast = (multi != "");
 }
    
 
@@ -64,7 +58,7 @@ void Udp_socket::socket_connect() {
 
 
 
-void Udp_socket::receive_message() {
+std::pair <sockaddr, socklen_t> Udp_socket::receive_message() {
     struct sockaddr src_addr;
     socklen_t addrlen;
     memset(buffer, 0, BSIZE);
@@ -72,18 +66,16 @@ void Udp_socket::receive_message() {
         syserr("recvfrom");
 
     printf("Request from: %s\n", inet_ntoa(((struct sockaddr_in *) &src_addr)->sin_addr));
-
     printf("otrzymałem %s", buffer);
+
+    return std::make_pair(src_addr, addrlen);
 }
 
-void Udp_socket::send_message(std::string message) {
-}
-
-void Udp_socket::send_message_direct(std::string message, const sockaddr_in &dst_addr, socklen_t addrlen) { // todo nieprzetestowane
+void Udp_socket::send_message_direct(std::string message, const sockaddr &dst_addr, socklen_t addrlen) {
     memset(buffer, 0, BSIZE);
     strncpy(buffer, message.c_str(), BSIZE);
     size_t length = strnlen(buffer, BSIZE);
-    if (sendto(sock, buffer, length, 0, reinterpret_cast<const sockaddr*>(&dst_addr), addrlen) < 0)
+    if (sendto(sock, buffer, length, 0, &dst_addr, addrlen) < 0)
         syserr("sendto");
 }
 
