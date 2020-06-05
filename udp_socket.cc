@@ -1,7 +1,7 @@
-#include "udp_sender.h"
+#include "udp_socket.h"
 
 
-Udp_sender::Udp_sender(std::string port, std::string multi, int timeout)
+Udp_socket::Udp_socket(std::string port, std::string multi, int timeout)
  : connection_port(const_cast<char*>(port.c_str())), connection_multi(const_cast<char*>(multi.c_str())),
    timeout_in_seconds(timeout)
 {
@@ -14,7 +14,7 @@ Udp_sender::Udp_sender(std::string port, std::string multi, int timeout)
 }
    
 
-void Udp_sender::socket_connect() {
+void Udp_socket::socket_connect() {
     /* get socket */
     sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (sock < 0)   
@@ -64,7 +64,7 @@ void Udp_sender::socket_connect() {
 
 
 
-void Udp_sender::receive_message() {
+void Udp_socket::receive_message() {
     struct sockaddr src_addr;
     socklen_t addrlen;
     memset(buffer, 0, BSIZE);
@@ -76,11 +76,10 @@ void Udp_sender::receive_message() {
     printf("otrzymałem %s", buffer);
 }
 
-void Udp_sender::send_message(std::string message) {
-
+void Udp_socket::send_message(std::string message) {
 }
 
-void Udp_sender::send_message_direct(std::string message, const sockaddr_in &dst_addr, socklen_t addrlen) {
+void Udp_socket::send_message_direct(std::string message, const sockaddr_in &dst_addr, socklen_t addrlen) { // todo nieprzetestowane
     memset(buffer, 0, BSIZE);
     strncpy(buffer, message.c_str(), BSIZE);
     size_t length = strnlen(buffer, BSIZE);
@@ -88,6 +87,6 @@ void Udp_sender::send_message_direct(std::string message, const sockaddr_in &dst
         syserr("sendto");
 }
 
-char* Udp_sender::get_buffer() {
+char* Udp_socket::get_buffer() {
     return buffer;
 }

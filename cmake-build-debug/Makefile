@@ -244,32 +244,32 @@ tcp_socket.cc.s:
 	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/tcp_socket.cc.s
 .PHONY : tcp_socket.cc.s
 
-udp_sender.o: udp_sender.cc.o
+udp_socket.o: udp_socket.cc.o
 
-.PHONY : udp_sender.o
+.PHONY : udp_socket.o
 
 # target to build an object file
-udp_sender.cc.o:
-	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/udp_sender.cc.o
-.PHONY : udp_sender.cc.o
+udp_socket.cc.o:
+	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/udp_socket.cc.o
+.PHONY : udp_socket.cc.o
 
-udp_sender.i: udp_sender.cc.i
+udp_socket.i: udp_socket.cc.i
 
-.PHONY : udp_sender.i
+.PHONY : udp_socket.i
 
 # target to preprocess a source file
-udp_sender.cc.i:
-	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/udp_sender.cc.i
-.PHONY : udp_sender.cc.i
+udp_socket.cc.i:
+	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/udp_socket.cc.i
+.PHONY : udp_socket.cc.i
 
-udp_sender.s: udp_sender.cc.s
+udp_socket.s: udp_socket.cc.s
 
-.PHONY : udp_sender.s
+.PHONY : udp_socket.s
 
 # target to generate assembly for a file
-udp_sender.cc.s:
-	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/udp_sender.cc.s
-.PHONY : udp_sender.cc.s
+udp_socket.cc.s:
+	$(MAKE) -f CMakeFiles/radio-proxy.dir/build.make CMakeFiles/radio-proxy.dir/udp_socket.cc.s
+.PHONY : udp_socket.cc.s
 
 # Help Target
 help:
@@ -293,9 +293,9 @@ help:
 	@echo "... tcp_socket.o"
 	@echo "... tcp_socket.i"
 	@echo "... tcp_socket.s"
-	@echo "... udp_sender.o"
-	@echo "... udp_sender.i"
-	@echo "... udp_sender.s"
+	@echo "... udp_socket.o"
+	@echo "... udp_socket.i"
+	@echo "... udp_socket.s"
 .PHONY : help
 
 

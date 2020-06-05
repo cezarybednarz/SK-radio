@@ -157,10 +157,10 @@
 		<Unit filename="/home/cezary/Dokumenty/SK/SK-radio/tcp_socket.h">
 			<Option target="radio-proxy"/>
 		</Unit>
-		<Unit filename="/home/cezary/Dokumenty/SK/SK-radio/udp_sender.cc">
+		<Unit filename="/home/cezary/Dokumenty/SK/SK-radio/udp_socket.cc">
 			<Option target="radio-proxy"/>
 		</Unit>
-		<Unit filename="/home/cezary/Dokumenty/SK/SK-radio/udp_sender.h">
+		<Unit filename="/home/cezary/Dokumenty/SK/SK-radio/udp_socket.h">
 			<Option target="radio-proxy"/>
 		</Unit>
 		<Unit filename="/home/cezary/Dokumenty/SK/SK-radio/CMakeLists.txt">

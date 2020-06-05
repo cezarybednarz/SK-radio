@@ -23,7 +23,7 @@
 #include "err.h"
 #include "constants.h"
 
-class Udp_sender {
+class Udp_socket {
     
     int sock;
 
@@ -40,7 +40,7 @@ class Udp_sender {
     
 public:
     
-    Udp_sender(std::string port, std::string multi, int timeout);
+    Udp_socket(std::string port, std::string multi, int timeout);
     void socket_connect();
     void receive_message();
     void send_message(std::string message);

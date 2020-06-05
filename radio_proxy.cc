@@ -1,6 +1,6 @@
 
 #include "radio_proxy.h"
-#include "udp_sender.h"
+#include "udp_socket.h"
 
 bool Radio_proxy::parse_host(const std::string& _host) {
     if (flags & HOST_DEFINED) 
@@ -171,6 +171,7 @@ bool Radio_proxy::init(int argc, char* argv[]) {
                 return false;
         }
         else {
+            std::cerr << "wrong flag\n";
             return false;
         }
     }
@@ -191,7 +192,7 @@ bool Radio_proxy::init(int argc, char* argv[]) {
     /* A+B */
     if ((flags & UDP_PORT_DEFINED) || (flags & UDP_MULTI_DEFINED) || (flags & UDP_TIMEOUT_DEFINED)) {
         udp_flags = true;
-        if (flags & UDP_PORT_DEFINED) {
+        if (!(flags & UDP_PORT_DEFINED)) {
             std::cerr << "define UDP port\n";
             return false;
         }
@@ -288,7 +289,8 @@ void Radio_proxy::start()
     tcp_socket.socket_connect();
     tcp_socket.socket_send_request(create_get_request());
 
-    Udp_sender udp_sender(udp_port, udp_multicast, udp_timeout);
+    Udp_socket udp_socket(udp_port, udp_multicast, udp_timeout);
+    udp_socket.socket_connect();
 
     read_header(tcp_socket);
 
@@ -312,7 +314,7 @@ void Radio_proxy::start()
     }
     else { /* A+B */
         while (errno >= 0) {
-
+            udp_socket.receive_message();
         }
     }
 }

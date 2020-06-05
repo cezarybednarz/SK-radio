@@ -15,8 +15,8 @@ string
 /home/cezary/Dokumenty/SK/SK-radio/radio_proxy.cc
 radio_proxy.h
 /home/cezary/Dokumenty/SK/SK-radio/radio_proxy.h
-udp_sender.h
-/home/cezary/Dokumenty/SK/SK-radio/udp_sender.h
+udp_socket.h
+/home/cezary/Dokumenty/SK/SK-radio/udp_socket.h
 
 /home/cezary/Dokumenty/SK/SK-radio/radio_proxy.h
 iostream
@@ -76,7 +76,7 @@ poll.h
 err.h
 /home/cezary/Dokumenty/SK/SK-radio/err.h
 
-/home/cezary/Dokumenty/SK/SK-radio/udp_sender.h
+/home/cezary/Dokumenty/SK/SK-radio/udp_socket.h
 sstream
 -
 iostream

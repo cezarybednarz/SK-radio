@@ -7,7 +7,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/cezary/Dokumenty/SK/SK-radio/err.cc" "/home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/radio-proxy.dir/err.cc.o"
   "/home/cezary/Dokumenty/SK/SK-radio/radio_proxy.cc" "/home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/radio-proxy.dir/radio_proxy.cc.o"
   "/home/cezary/Dokumenty/SK/SK-radio/tcp_socket.cc" "/home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/radio-proxy.dir/tcp_socket.cc.o"
-  "/home/cezary/Dokumenty/SK/SK-radio/udp_sender.cc" "/home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/radio-proxy.dir/udp_sender.cc.o"
+  "/home/cezary/Dokumenty/SK/SK-radio/udp_socket.cc" "/home/cezary/Dokumenty/SK/SK-radio/cmake-build-debug/CMakeFiles/radio-proxy.dir/udp_socket.cc.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
