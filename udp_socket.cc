@@ -82,3 +82,24 @@ void Udp_socket::send_message_direct(std::string message, const sockaddr &dst_ad
 char* Udp_socket::get_buffer() {
     return buffer;
 }
+
+char *Udp_socket::create_datagram(uint16_t type, uint16_t length, std::string message) {
+    std::string ret(4 + message.length(), 0);
+    type = htons(type);
+    length = htons(length);
+    ret[0] = (char)(type / 8);
+    ret[1] = (char)(type % 8);
+    ret[2] = (char)(length / 8);
+    ret[3] = (char)(length % 8);
+    for (size_t i = 0; i < message.length(); i++) {
+        ret[i + 4] = message[i];
+    }
+    return const_cast<char*>(ret.c_str());
+}
+
+std::tuple<uint16_t, uint16_t, std::string> Udp_socket::read_datagram(char *data) {
+    uint16_t type = ntohs(data[0]*8 + data[1]);
+    uint16_t length = ntohs(data[2]*8 + data[3]);
+    std::string message(data + 4);
+    return std::make_tuple(type, length, message);
+}

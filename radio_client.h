@@ -27,7 +27,7 @@ class Radio_client {
 
 public:
     Radio_client();
-    void init();
+    bool init(int argc, char *argv[]);
     void start();
 
     void send_discover();
