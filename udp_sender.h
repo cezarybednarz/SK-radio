@@ -15,6 +15,10 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <cstring>
+#include <arpa/inet.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+
 
 #include "err.h"
 #include "constants.h"
@@ -22,22 +26,27 @@
 class Udp_sender {
     
     int sock;
-    
-    char* connection_addr;
+
     char* connection_port;
+    char* connection_multi;
     int timeout_in_seconds;
     bool multicast;
-    
-    ip_mreq ipmreq;
+
+
+    char buffer[BSIZE];
+    struct ip_mreq ip_mreq;
     sockaddr_in local_addr;
     sockaddr_in remote_addr;
     
 public:
     
-    Udp_sender(std::string addr, std::string port, int timeout, bool multi);
+    Udp_sender(std::string port, std::string multi, int timeout);
     void socket_connect();
+    void receive_message();
     void send_message(std::string message);
-    void send_message_direct(std::string message, const sockaddr_in &dst_addr);
+    void send_message_direct(std::string message, const sockaddr_in &dst_addr, socklen_t addrlen);
+
+    char *get_buffer();
 };
 
 #endif /* UDP_SENDER_H */

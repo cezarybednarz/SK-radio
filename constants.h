@@ -19,7 +19,8 @@ const std::string OK_response1 = "ICY 200 OK";
 const std::string OK_response2 = "HTTP/1.0 200 OK";
 const std::string OK_response3 = "HTTP/1.1 200 OK";
 const std::string ICY_METAINT = "icy-metaint";
-const size_t CONTINUOUS_BUFFER = (2 << 11);
+const size_t CONTINUOUS_BUFFER = (1 << 11);
 const int TTL_VALUE = 4;
+const int BSIZE = (1 << 16);
 
 #endif //ZADANIE_2_CONSTANTS_H

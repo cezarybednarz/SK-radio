@@ -32,8 +32,9 @@ void Tcp_socket::socket_connect() {
     freeaddrinfo(addr_result);
 
     fp = fdopen(sock, "r");
-    if (!fp)
+    if (!fp) {
         syserr("fdopen");
+    }
         
 	struct timeval tv;
 	tv.tv_sec = timeout_in_seconds;

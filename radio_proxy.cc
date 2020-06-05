@@ -1,6 +1,6 @@
 
 #include "radio_proxy.h"
-
+#include "udp_sender.h"
 
 bool Radio_proxy::parse_host(const std::string& _host) {
     if (flags & HOST_DEFINED) 
@@ -129,6 +129,7 @@ Radio_proxy::Radio_proxy() {
     timeout = 5;
     udp_flags = false;
     udp_timeout = 5;
+    udp_multicast = "";
 }
 
 bool Radio_proxy::init(int argc, char* argv[]) {
@@ -204,7 +205,7 @@ std::string Radio_proxy::create_get_request() {
     ret.append("GET " + resource + " HTTP/1.1\r\n");
     ret.append("Host: " + host + "\r\n");
     ret.append("Accept: */*\r\n");
-    if(metadata) {
+    if (metadata) {
         ret.append("Icy-MetaData: 1\r\n");
     }
     else {
@@ -287,22 +288,31 @@ void Radio_proxy::start()
     tcp_socket.socket_connect();
     tcp_socket.socket_send_request(create_get_request());
 
+    Udp_sender udp_sender(udp_port, udp_multicast, udp_timeout);
+
     read_header(tcp_socket);
 
     std::cout << "radio-proxy started, listening...\n";
 
     std::string data_bytes, metadata_bytes;
 
-    while (errno >= 0) {
-        if (icy_metaint != -1) { /* metadata sent by server */
-            data_bytes = read_data(tcp_socket);
-            metadata_bytes = read_metadata(tcp_socket);
-            std::cout << data_bytes;
-            std::cerr << metadata_bytes;
+    if (!udp_flags) { /* A */
+        while (errno >= 0) {
+            if (icy_metaint != -1) { /* metadata sent by server */
+                data_bytes = read_data(tcp_socket);
+                metadata_bytes = read_metadata(tcp_socket);
+                std::cout << data_bytes;
+                std::cerr << metadata_bytes;
+            }
+            else {
+                data_bytes = read_continuous_data(tcp_socket, CONTINUOUS_BUFFER);
+                std::cout << data_bytes;
+            }
         }
-        else {
-            data_bytes = read_continuous_data(tcp_socket, CONTINUOUS_BUFFER);
-            std::cout << data_bytes;
+    }
+    else { /* A+B */
+        while (errno >= 0) {
+
         }
     }
 }

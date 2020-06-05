@@ -9,6 +9,7 @@ CMakeFiles/radio-proxy.dir/radio_proxy.cc.o: ../err.h
 CMakeFiles/radio-proxy.dir/radio_proxy.cc.o: ../radio_proxy.cc
 CMakeFiles/radio-proxy.dir/radio_proxy.cc.o: ../radio_proxy.h
 CMakeFiles/radio-proxy.dir/radio_proxy.cc.o: ../tcp_socket.h
+CMakeFiles/radio-proxy.dir/radio_proxy.cc.o: ../udp_sender.h
 
 CMakeFiles/radio-proxy.dir/tcp_socket.cc.o: ../err.h
 CMakeFiles/radio-proxy.dir/tcp_socket.cc.o: ../tcp_socket.cc

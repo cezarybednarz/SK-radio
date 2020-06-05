@@ -10,6 +10,7 @@ CMakeFiles/radio-proxy.dir/radio_proxy.cc.o
  /home/cezary/Dokumenty/SK/SK-radio/radio_proxy.cc
  /home/cezary/Dokumenty/SK/SK-radio/radio_proxy.h
  /home/cezary/Dokumenty/SK/SK-radio/tcp_socket.h
+ /home/cezary/Dokumenty/SK/SK-radio/udp_sender.h
 CMakeFiles/radio-proxy.dir/tcp_socket.cc.o
  /home/cezary/Dokumenty/SK/SK-radio/err.h
  /home/cezary/Dokumenty/SK/SK-radio/tcp_socket.cc
