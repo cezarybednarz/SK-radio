@@ -36,11 +36,6 @@ bool Radio_proxy::parse_port(const std::string& _port) {
             return false;
     }
 
-    for (char c : _port) {
-        if (!std::isdigit(c))
-            return false;
-    }
-
     port = _port;
     
     return true;
