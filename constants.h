@@ -29,6 +29,7 @@ const size_t CONTINUOUS_BUFFER = (1 << 11);
 const int TTL_VALUE = 4;
 const int BSIZE = (1 << 16);
 const int DATA_LENGTH = (1 << 16); /* maximum length of datagram */
+const long double THREE_AND_HALF_USECONDS = 3.5;
 
 /* datagram types */
 #define DISCOVER  1

@@ -16,6 +16,7 @@
 #include <sys/socket.h>
 #include <cstring>
 #include <poll.h>
+#include <ctime>
 
 #include "err.h"
 #include "udp_socket.h"
@@ -37,15 +38,6 @@ public:
     bool parse_udp_port(const std::string& resource);
     bool parse_tcp_port(const std::string& port);
     bool parse_timeout(const std::string& metadata);
-
-    /*
-    void send_discover();
-    void send_keepalive();
-
-    void receive_iam();
-    void receive_audio();
-    void receive_metadata();
-*/
 };
 
 #endif //RADIO_CLIENT_H

@@ -129,22 +129,46 @@ void Radio_client::start() {
     std::cout << "sending DISCOVER\n";
     udp_socket.send_message_direct(Udp_socket::create_datagram(DISCOVER, 0, ""), *proxy_sockaddr, proxy_addrlen);
 
+
+    struct pollfd group[1];
+
+    /* initialise UDP poll group */
+    group[0].fd = udp_socket.get_socket();
+    group[0].events = (POLLIN | POLLOUT | POLLERR);
+    group[0].revents = 0;
+
+    std::clock_t last_keepalive = std::clock();
+
     while (errno >= 0) {
-        /* send KEEPALIVE */
-        std::cout << "sending KEEPALIVE\n";
-        udp_socket.send_message_direct(Udp_socket::create_datagram(KEEPALIVE, 0, ""), *proxy_sockaddr, proxy_addrlen);
-        usleep(3500000);
-        //auto addr_pair =  udp_socket.receive_message();
+        group[0].revents = 0;
+
+        int ret = poll(group, 1, 1000 * timeout);
+        if (ret < 0)
+            syserr("poll");
+        if (ret == 0)
+            syserr("poll timeout");
+
+        /* reading data from UDP socket */
+        if (group[0].revents & POLLIN) {
+            auto addr_pair = udp_socket.receive_message();
+            auto data = Udp_socket::read_datagram(udp_socket.get_buffer());
+
+            std::cout << "received data: " << std::get<0>(data) << " " << std::get<1>(data) << " " << std::get<2>(data) << "\n";
+        }
+
+        /* sending data to UDP socket */
+        if (group[0].revents & POLLOUT) {
+            /* sending KEEPALIVE if needed */
+            std::clock_t curr_time = std::clock();
+            if ((long double)(curr_time - last_keepalive)/(long double)CLOCKS_PER_SEC > THREE_AND_HALF_USECONDS) {
+                std::cout << "sending KEEPALIVE\n";
+                udp_socket.send_message_direct(Udp_socket::create_datagram(KEEPALIVE, 0, ""), *proxy_sockaddr, proxy_addrlen);
+                last_keepalive = curr_time;
+            }
+        }
     }
 }
 
-void send_discover() {
-
-}
-
-void send_keepalive() {
-
-}
 
 int main(int argc, char* argv[]) {
     Radio_client radio_client;

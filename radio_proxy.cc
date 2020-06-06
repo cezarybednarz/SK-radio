@@ -323,13 +323,14 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
         group[TCP_POLL].revents = 0;
         group[UDP_POLL].revents = 0;
 
-        int ret = poll(group, 2, std::max(timeout, udp_timeout));
+        int ret = poll(group, 2, 1000 * std::max(timeout, udp_timeout));
         if (ret < 0)
             syserr("poll");
         if (ret == 0)
             syserr("poll timeout");
 
         /* receive messages or radio signal from sockets */
+        bool received_audio = false;
         if (group[TCP_POLL].revents & POLLIN) {
             /* check time of last socket read */
             std::clock_t curr_time = std::clock();
@@ -346,6 +347,7 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
             else {
                 data_bytes = read_continuous_data(tcp_socket, CONTINUOUS_BUFFER);
             }
+            received_audio = true;
         }
 
         if (group[UDP_POLL].revents & POLLIN) { /* receiving signal from client */
@@ -362,6 +364,7 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
             }
 
             if (type == DISCOVER) {
+                std::cout << "received DISCOVER\n";
                 if (id == -1) { /* no such ip address saved, we need to add it to vector */
                     clients.push_back(std::make_tuple(addr_pair.first, addr_pair.second, std::clock()));
                 }
@@ -377,9 +380,13 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
                 udp_socket.send_message_direct(message, addr_pair.first, addr_pair.second);
             }
             if (type == KEEPALIVE) {
+                std::cout << "received KEEPALIVE\n";
                 /* update the timestamp */
-                std::get<2>(clients[id]) = std::clock();
+                if (id != -1) {
+                    std::get<2>(clients[id]) = std::clock();
+                }
             }
+            std::cout << "clients.size() = " << clients.size() << "\n";
         }
 
         /* check for timed out clients */
@@ -393,8 +400,8 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
             }
         }
 
-        /* send radio signal to clients */
-        if (group[UDP_POLL].revents & POLLOUT) {
+        /* send radio signal to clients (if received) */
+        if ((group[UDP_POLL].revents & POLLOUT) && received_audio) {
             /* send AUDIO */
             for (size_t i = 0; i < data_bytes.length(); i += DATA_LENGTH) { /* if radio sends audio longer that 2^16 */
                 std::string to_send;
@@ -403,11 +410,13 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
                 }
                 char *message = Udp_socket::create_datagram(AUDIO, to_send.length(), to_send);
                 for (auto &client : clients) {
+                    std::cout << "sending AUDIO\n" << i << "\n" << data_bytes.length() << "\n" << clients.size() << "\n\n";
                     udp_socket.send_message_direct(message, std::get<0>(client), std::get<1>(client));
                 }
             }
             /* send METADATA */
             if (icy_metaint != -1) { /* metadata sent by server */
+                std::cout << "sending METADATA\n";
                 char *message = Udp_socket::create_datagram(METADATA, metadata_bytes.length(), metadata_bytes);
                 for (auto& client : clients) {
                     udp_socket.send_message_direct(message, std::get<0>(client), std::get<1>(client));
