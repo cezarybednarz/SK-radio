@@ -314,38 +314,98 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
 
     std::string data_bytes, metadata_bytes;
 
-    while (errno >= 0) {
-        int ret = poll(group, 2, udp_timeout);
-        if (ret <= 0)
-            syserr("poll");
+    /* vector of all available clients */
+    std::vector<std::tuple<sockaddr, socklen_t, std::clock_t>> clients; /* {addres, length of address, timestamp, flag} */
 
-        if (ret == TCP_POLL) { /* receiving radio signal */
+    std::clock_t prev_tcp_time = std::clock();
+
+    while (errno >= 0) {
+        group[TCP_POLL].revents = 0;
+        group[UDP_POLL].revents = 0;
+
+        int ret = poll(group, 2, std::max(timeout, udp_timeout));
+        if (ret < 0)
+            syserr("poll");
+        if (ret == 0)
+            syserr("poll timeout");
+
+        /* receive messages or radio signal from sockets */
+        if (group[TCP_POLL].revents & POLLIN) {
+            /* check time of last socket read */
+            std::clock_t curr_time = std::clock();
+            long double delta_time = (long double)(curr_time-prev_tcp_time)/ (long double)CLOCKS_PER_SEC;
+            prev_tcp_time = curr_time;
+            if (delta_time >= timeout) {
+                syserr("tcp socket timeout");
+            }
+
             if (icy_metaint != -1) { /* metadata sent by server */
                 data_bytes = read_data(tcp_socket);
                 metadata_bytes = read_metadata(tcp_socket);
-                std::cout << data_bytes;
-                std::cerr << metadata_bytes;
             }
             else {
                 data_bytes = read_continuous_data(tcp_socket, CONTINUOUS_BUFFER);
-                std::cout << data_bytes;
             }
         }
-        else if (ret == UDP_POLL){ /* receiving signal from client */
+
+        if (group[UDP_POLL].revents & POLLIN) { /* receiving signal from client */
             auto addr_pair = udp_socket.receive_message();
+            std::string ip_addr = inet_ntoa(((struct sockaddr_in *) &addr_pair.first)->sin_addr);
             auto client_tuple = Udp_socket::read_datagram(udp_socket.get_buffer());
             uint16_t type = std::get<0>(client_tuple);
-            uint16_t length = std::get<1>(client_tuple);
-            std::string data = std::get<2>(client_tuple);
-            std::cout << type << " " << length << " " << data << "\n";
+
+            if (type == DISCOVER) {
+                bool exists = false;
+                for (size_t i = 0; i < clients.size(); i++) {
+                    if (ip_addr == inet_ntoa(((struct sockaddr_in *) &std::get<0>(clients[i]))->sin_addr)) {
+                        exists = true;
+                    }
+                }
+                if (!exists) { /* no such ip address saved, we need to add it to vector */
+                    clients.push_back(std::make_tuple(addr_pair.first, addr_pair.second, std::clock()));
+                }
+                else { /* if ip address exists in vector, wee treat DISCOVER as KEEPALIVE */
+                    type = KEEPALIVE;
+                }
+            }
+            if (type == KEEPALIVE) {
+
+
+            }
         }
-        else {
-            syserr("poll (unexpected value)");
+
+        /* check for timed out clients */
+        std::clock_t curr_time = std::clock(); // todo lekko zbugowane (to swapowanie)
+        for (size_t i = 0; i < clients.size(); i++) {
+            /* what if client timed out */
+            if (udp_timeout < (long double)(curr_time - std::get<2>(clients[i])) / (long double)CLOCKS_PER_SEC) {
+                /* we need to erase him */
+                std::swap(clients[i], clients.back());
+                clients.pop_back();
+            }
         }
 
-
-
-        //udp_socket.send_message_direct("XDD\n", addr_pair.first, addr_pair.second);
+        /* send radio signal to clients */
+        if (group[UDP_POLL].revents & POLLOUT) {
+            /* send AUDIO */
+            for (size_t i = 0; i < data_bytes.length(); i += DATA_LENGTH) { /* if radio sends audio longer that 2^16 */
+                std::string to_send;
+                for (size_t j = i; j < std::min(data_bytes.length(), i + DATA_LENGTH); j++) {
+                    to_send.push_back(data_bytes[j]);
+                }
+                char *message = Udp_socket::create_datagram(AUDIO, to_send.length(), to_send);
+                for (auto &client : clients) {
+                    udp_socket.send_message_direct(message, std::get<0>(client), std::get<1>(client));
+                }
+            }
+            /* send METADATA */
+            if (icy_metaint != -1) { /* metadata sent by server */
+                char *message = Udp_socket::create_datagram(METADATA, metadata_bytes.length(), metadata_bytes);
+                for (auto& client : clients) {
+                    udp_socket.send_message_direct(message, std::get<0>(client), std::get<1>(client));
+                }
+            }
+        }
     }
 }
 

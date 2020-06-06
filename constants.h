@@ -27,6 +27,7 @@ const std::string ICY_METAINT = "icy-metaint";
 const size_t CONTINUOUS_BUFFER = (1 << 11);
 const int TTL_VALUE = 4;
 const int BSIZE = (1 << 16);
+const int DATA_LENGTH = (1 << 16); /* maximum length of datagram */
 
 /* datagram types */
 #define DISCOVER  1
