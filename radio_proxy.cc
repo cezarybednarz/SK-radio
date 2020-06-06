@@ -355,6 +355,9 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
             std::string ip_addr = inet_ntoa(((struct sockaddr_in *) &addr_pair.first)->sin_addr);
             auto client_tuple = Udp_socket::read_datagram(udp_socket.get_buffer());
             uint16_t type = std::get<0>(client_tuple);
+            uint16_t length = std::get<1>(client_tuple);
+
+            std::cout << "received data: " << std::get<0>(client_tuple) << " " << std::get<1>(client_tuple) << " [" << std::get<2>(client_tuple) << "]\n";
 
             int id = -1; /* id of client with this IP in clients array */
             for (size_t i = 0; i < clients.size(); i++) {
@@ -364,7 +367,6 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
             }
 
             if (type == DISCOVER) {
-                std::cout << "received DISCOVER\n";
                 if (id == -1) { /* no such ip address saved, we need to add it to vector */
                     clients.push_back(std::make_tuple(addr_pair.first, addr_pair.second, std::clock()));
                 }
@@ -380,13 +382,11 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
                 udp_socket.send_message_direct(message, addr_pair.first, addr_pair.second);
             }
             if (type == KEEPALIVE) {
-                std::cout << "received KEEPALIVE\n";
                 /* update the timestamp */
                 if (id != -1) {
                     std::get<2>(clients[id]) = std::clock();
                 }
             }
-            std::cout << "clients.size() = " << clients.size() << "\n";
         }
 
         /* check for timed out clients */
@@ -410,13 +410,11 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
                 }
                 char *message = Udp_socket::create_datagram(AUDIO, to_send.length(), to_send);
                 for (auto &client : clients) {
-                    std::cout << "sending AUDIO\n" << i << "\n" << data_bytes.length() << "\n" << clients.size() << "\n\n";
                     udp_socket.send_message_direct(message, std::get<0>(client), std::get<1>(client));
                 }
             }
             /* send METADATA */
             if (icy_metaint != -1) { /* metadata sent by server */
-                std::cout << "sending METADATA\n";
                 char *message = Udp_socket::create_datagram(METADATA, metadata_bytes.length(), metadata_bytes);
                 for (auto& client : clients) {
                     udp_socket.send_message_direct(message, std::get<0>(client), std::get<1>(client));

@@ -67,9 +67,9 @@ std::pair <sockaddr, socklen_t> Udp_socket::receive_message() {
     return std::make_pair(src_addr, addrlen);
 }
 
-void Udp_socket::send_message_direct(std::string message, sockaddr &dst_addr, socklen_t addrlen) {
+void Udp_socket::send_message_direct(char *message, sockaddr &dst_addr, socklen_t addrlen) {
     memset(buffer, 0, BSIZE);
-    strncpy(buffer, message.c_str(), BSIZE);
+    strncpy(buffer, message, BSIZE);
     size_t length = strnlen(buffer, BSIZE);
     if (sendto(sock, buffer, length, 0, &dst_addr, addrlen) < 0)
         syserr("sendto");
@@ -83,6 +83,8 @@ char *Udp_socket::create_datagram(uint16_t type, uint16_t length, std::string me
     std::string ret(4 + message.length(), 0);
     type = htons(type);
     length = htons(length);
+
+
     ret[0] = (char)(type / 8);
     ret[1] = (char)(type % 8);
     ret[2] = (char)(length / 8);

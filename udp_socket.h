@@ -44,7 +44,7 @@ public:
     Udp_socket(std::string port, std::string multi, int timeout);
     void socket_connect();
     std::pair<sockaddr, socklen_t> receive_message();
-    void send_message_direct(std::string message, sockaddr &dst_addr, socklen_t addrlen);
+    void send_message_direct(char *message, sockaddr &dst_addr, socklen_t addrlen);
     char *get_buffer(); /* message recieved from last receive_message() */
     static char *create_datagram(uint16_t type, uint16_t length, std::string message);
     static std::tuple<uint16_t, uint16_t, std::string> read_datagram(char *data);
