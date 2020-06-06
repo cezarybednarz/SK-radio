@@ -356,14 +356,8 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
             auto buffer = udp_socket.get_buffer();
             auto client_tuple = Udp_socket::read_datagram(buffer);
 
-            for(int i = 0; i < 4; i++)
-                std::cout << "[" << (uint16_t)buffer[i] << "]";
-            std::cout << "\n";
-
             uint16_t type = std::get<0>(client_tuple);
             uint16_t length = std::get<1>(client_tuple);
-
-            std::cout << "received data: " << std::get<0>(client_tuple) << " " << std::get<1>(client_tuple) << " [" << std::get<2>(client_tuple) << "]\n";
 
             int id = -1; /* id of client with this IP in clients array */
             for (size_t i = 0; i < clients.size(); i++) {
@@ -386,11 +380,6 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
 
                 auto message = Udp_socket::create_datagram(IAM, description.length(), description);
                 auto data = Udp_socket::read_datagram(message);
-                std::cout << "IAM sent data: " << std::get<0>(data) << " " << std::get<1>(data) << " [" << std::get<2>(data) << "] " << "\n";
-
-                for(int i = 0; i < 4; i++)
-                    std::cout << "[" << (uint16_t)message[i] << "]";
-                std::cout << "\n";
 
                 udp_socket.send_message_direct(message, addr_pair.first, addr_pair.second);
             }
@@ -441,15 +430,11 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
 
 void Radio_proxy::start()
 {
-    std::cout << "starting radio-proxy\n";
-
     Tcp_socket tcp_socket(host, port, timeout);
     tcp_socket.socket_connect();
     tcp_socket.socket_send_request(create_get_request());
 
     read_header(tcp_socket);
-
-    std::cout << "radio-proxy started, listening...\n";
 
     if (!udp_flags) { /* A */
         no_udp_casting(tcp_socket);
