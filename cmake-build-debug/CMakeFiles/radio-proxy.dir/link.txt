@@ -1,1 +1,0 @@
-/usr/bin/c++  -g -Wall -Wextra -std=c++17 -g -DDEBUG  -rdynamic CMakeFiles/radio-proxy.dir/radio_proxy.cc.o CMakeFiles/radio-proxy.dir/tcp_socket.cc.o CMakeFiles/radio-proxy.dir/err.cc.o CMakeFiles/radio-proxy.dir/udp_socket.cc.o  -o radio-proxy 
