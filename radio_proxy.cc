@@ -355,6 +355,11 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
             std::string ip_addr = inet_ntoa(((struct sockaddr_in *) &addr_pair.first)->sin_addr);
             auto buffer = udp_socket.get_buffer();
             auto client_tuple = Udp_socket::read_datagram(buffer);
+            
+            for(int i = 0; i < 4; i++)
+                std::cout << "[" << (uint16_t)buffer[i] << "]";
+            std::cout << "\n";
+
             uint16_t type = std::get<0>(client_tuple);
             uint16_t length = std::get<1>(client_tuple);
 

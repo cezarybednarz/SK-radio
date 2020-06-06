@@ -154,9 +154,13 @@ void Radio_client::start() {
         /* reading data from UDP socket */
         if (group[0].revents & POLLIN) {
             auto addr_pair = udp_socket.receive_message();
-            auto data = Udp_socket::read_datagram(udp_socket.get_buffer());
+            auto buffer = udp_socket.get_buffer();
+            auto data = Udp_socket::read_datagram(buffer);
 
             std::cout << "received data: " << std::get<0>(data) << " " << std::get<1>(data) << " [" << std::get<2>(data) << "] " << "from " << inet_ntoa(((struct sockaddr_in *) &addr_pair.first)->sin_addr) << "\n";
+            for(int i = 0; i < 4; i++)
+                std::cout << "[" << (uint16_t)buffer[i] << "]";
+            std::cout << "\n";
         }
 
         /* sending data to UDP socket */
