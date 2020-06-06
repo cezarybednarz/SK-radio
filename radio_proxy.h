@@ -34,7 +34,6 @@ class Radio_proxy {
     std::string udp_multicast;
     int udp_timeout;
 
-    std::string first_line_of_response;
     std::map<std::string, std::string> header_info;
     int icy_metaint; /* '-1' if no icy-metaint defined in response (or if icy-metaint is equal 0) */
 

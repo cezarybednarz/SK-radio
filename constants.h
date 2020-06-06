@@ -28,7 +28,7 @@ const std::string ICY_NAME     = "icy-name";
 const size_t CONTINUOUS_BUFFER = (1 << 12);
 const int TTL_VALUE = 4;
 const int BSIZE = (1 << 16) + 4;
-const int DATA_LENGTH = (1 << 16); /* maximum length of datagram */
+const int DATA_LENGTH = 1500;
 const int OCTET = (1 << 8);
 const long double THREE_AND_HALF_USECONDS = 3.5;
 

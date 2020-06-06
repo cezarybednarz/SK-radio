@@ -6,6 +6,9 @@ Tcp_socket::Tcp_socket(const std::string& addr, const std::string& port, int tim
    timeout_in_seconds(timeout)
 { }
 
+/*
+ * initialise socket and all flags
+ */
 void Tcp_socket::socket_connect() {
     struct addrinfo addr_hints, *addr_result;
 
@@ -48,6 +51,9 @@ void Tcp_socket::socket_send_request(std::string content) {
     }
 }
 
+/*
+ * read whole line from socket (to '\n' sign)
+ */
 std::string Tcp_socket::socket_getline() {
     char *line_buf = nullptr;
     size_t line_buf_size = 0;

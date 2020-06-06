@@ -8,6 +8,9 @@ Udp_socket::Udp_socket(std::string port, std::string multi, int timeout)
 }
    
 
+/*
+ * create socket and initialise all flags (and activate multicasting if necessary)
+ */
 void Udp_socket::socket_connect() {
     /* get socket */
     sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -47,7 +50,10 @@ void Udp_socket::socket_connect() {
 }
 
 
-
+/*
+ * gets address from sender and saves message in buffer
+ * (it can be accessed with get_buffer() function)
+ */
 std::pair <sockaddr, socklen_t> Udp_socket::receive_message() {
     struct sockaddr src_addr;
     socklen_t addrlen;
@@ -57,6 +63,9 @@ std::pair <sockaddr, socklen_t> Udp_socket::receive_message() {
     return std::make_pair(src_addr, addrlen);
 }
 
+/*
+ * send message to single IP adress
+ */
 void Udp_socket::send_message_direct(std::string message, sockaddr &dst_addr, socklen_t addrlen) {
     //memset(buffer, 0, BSIZE);
     for(size_t i = 0; i < message.length(); i++)
@@ -65,6 +74,9 @@ void Udp_socket::send_message_direct(std::string message, sockaddr &dst_addr, so
         syserr("sendto");
 }
 
+/*
+ * buffer can be accessed after receive_message() function
+ */
 std::string Udp_socket::get_buffer() {
     std::string ret;
     for(int i = 0; i < BSIZE; i++) {
@@ -73,6 +85,9 @@ std::string Udp_socket::get_buffer() {
     return ret;
 }
 
+/*
+ * cr
+ */
 std::string Udp_socket::create_datagram(uint16_t type, uint16_t length, std::string message) {
     std::string ret(4 + message.length(), 0);
     type = htons(type);

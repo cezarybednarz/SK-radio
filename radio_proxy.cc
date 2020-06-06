@@ -2,13 +2,16 @@
 #include "radio_proxy.h"
 #include "udp_socket.h"
 
+
+/*
+ * parse strings from command line flags and save them in
+ * Radio_proxy class structures
+ */
 bool Radio_proxy::parse_host(const std::string& _host) {
     if (flags & HOST_DEFINED) 
         return false;
     flags |= HOST_DEFINED;
-    
-    // parsowanie
-    
+
     host = _host;
     
     return true;
@@ -18,9 +21,7 @@ bool Radio_proxy::parse_resource(const std::string& _resource) {
     if (flags & RESOURCE_DEFINED) 
         return false;
     flags |= RESOURCE_DEFINED;
-    
-    // parsowanie
-    
+
     resource = _resource;
     
     return true;
@@ -94,8 +95,6 @@ bool Radio_proxy::parse_udp_multicast(const std::string& _udp_multicast) {
         return false;
     flags |= UDP_MULTI_DEFINED;
 
-    // parsowanie
-
     udp_multicast = _udp_multicast;
 
     return true;
@@ -116,7 +115,9 @@ bool Radio_proxy::parse_udp_timeout(const std::string& _udp_timeout) {
     return true;
 }
 
-
+/*
+ * constructor: init default values
+ */
 Radio_proxy::Radio_proxy() {
     /* default values */
     flags = 0;
@@ -127,6 +128,9 @@ Radio_proxy::Radio_proxy() {
     udp_multicast = "";
 }
 
+/*
+ * parse all command line parameters
+ */
 bool Radio_proxy::init(int argc, char* argv[]) {
     if ((argc % 2) != 1) 
         return false;
@@ -255,9 +259,13 @@ void Radio_proxy::read_header(Tcp_socket &tcp_socket) {
     }
 }
 
+/*
+ * reads all audio data between metadata headers in http response
+ */
 std::string Radio_proxy::read_data(Tcp_socket &tcp_socket) {
     return tcp_socket.socket_read_n_bytes(icy_metaint);
 }
+
 
 std::string Radio_proxy::read_metadata(Tcp_socket &tcp_socket) {
     int bytes = 16 * (tcp_socket.socket_read_n_bytes(1)[0]);
@@ -276,7 +284,10 @@ std::string Radio_proxy::read_continuous_data(Tcp_socket &tcp_socket, size_t buf
     return tcp_socket.socket_read_n_bytes(buffer);
 }
 
-/* task A (main loop)*/
+/* task A (main loop, single thread):
+ *    read bytes from radio server and output them to
+ *    stdout (audio data) or stderr (metadata)
+ */
 void Radio_proxy::no_udp_casting(Tcp_socket &tcp_socket) {
 
     std::string data_bytes, metadata_bytes;
@@ -294,7 +305,11 @@ void Radio_proxy::no_udp_casting(Tcp_socket &tcp_socket) {
     }
 }
 
-/* task A+B (main loop) */
+/* task A+B (main loop, single thread):
+ *    1) poll();
+ *    2) read data from radio server and radio-client
+ *    3) send data to radio-client (if read some audio data)
+ */
 void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
 
     Udp_socket udp_socket(udp_port, udp_multicast, udp_timeout);
@@ -404,9 +419,9 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
         /* send radio signal to clients (if received) */
         if ((group[UDP_POLL].revents & POLLOUT) && received_audio) {
             /* send AUDIO */
-            for (size_t i = 0; i < data_bytes.length(); i += 1000) { /* if radio sends audio longer that 2^16 */
+            for (size_t i = 0; i < data_bytes.length(); i += DATA_LENGTH) { /* if radio sends audio longer that 2^16 */
                 std::string to_send;
-                for (size_t j = i; j < std::min(data_bytes.length(), i + 1000); j++) {
+                for (size_t j = i; j < std::min(data_bytes.length(), i + DATA_LENGTH); j++) {
                     to_send.push_back(data_bytes[j]);
                 }
                 auto message = Udp_socket::create_datagram(AUDIO, to_send.length(), to_send);
@@ -426,7 +441,9 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
     }
 }
 
-
+/*
+ * start radio-proxy and choose between task A or task A+B
+ */
 void Radio_proxy::start()
 {
     Tcp_socket tcp_socket(host, port, timeout);
@@ -443,6 +460,10 @@ void Radio_proxy::start()
     }
 }
 
+/* ========================
+ *           MAIN
+ * ========================
+ */
 int main(int argc, char* argv[]) {
     Radio_proxy radio;
 

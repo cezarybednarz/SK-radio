@@ -5,8 +5,6 @@ bool Radio_client::parse_host(const std::string& _host) {
         return false;
     flags |= CLIENT_HOST_DEFINED;
 
-    // parsowanie
-
     host = _host;
 
     return true;
