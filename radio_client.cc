@@ -155,7 +155,7 @@ void Radio_client::start() {
             uint16_t length = std::get<1>(data);
             std::string content = std::get<2>(data);
             if (type == AUDIO) {
-                //std::cout << content;
+                std::cout << content;
             }
             if (type == METADATA) {
                 std::cerr << content;
