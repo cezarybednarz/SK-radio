@@ -354,23 +354,31 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
             auto client_tuple = Udp_socket::read_datagram(udp_socket.get_buffer());
             uint16_t type = std::get<0>(client_tuple);
 
-            if (type == DISCOVER) {
-                bool exists = false;
-                for (size_t i = 0; i < clients.size(); i++) {
-                    if (ip_addr == inet_ntoa(((struct sockaddr_in *) &std::get<0>(clients[i]))->sin_addr)) {
-                        exists = true;
-                    }
+            int id = -1; /* id of client with this IP in clients array */
+            for (size_t i = 0; i < clients.size(); i++) {
+                if (ip_addr == inet_ntoa(((struct sockaddr_in *) &std::get<0>(clients[i]))->sin_addr)) {
+                    id = i;
                 }
-                if (!exists) { /* no such ip address saved, we need to add it to vector */
+            }
+
+            if (type == DISCOVER) {
+                if (id == -1) { /* no such ip address saved, we need to add it to vector */
                     clients.push_back(std::make_tuple(addr_pair.first, addr_pair.second, std::clock()));
                 }
                 else { /* if ip address exists in vector, wee treat DISCOVER as KEEPALIVE */
                     type = KEEPALIVE;
                 }
+                /* respond with IAM message (first create radio description)*/
+                std::string description;
+                if (header_info.find(ICY_NAME) != header_info.end())
+                    description.append(header_info[ICY_NAME]);
+
+                char *message = Udp_socket::create_datagram(IAM, description.length(), description);
+                udp_socket.send_message_direct(message, addr_pair.first, addr_pair.second);
             }
             if (type == KEEPALIVE) {
-
-
+                /* update the timestamp */
+                std::get<2>(clients[id]) = std::clock();
             }
         }
 
