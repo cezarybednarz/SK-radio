@@ -13,19 +13,9 @@ void Udp_socket::socket_connect() {
     sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (sock < 0)   
         syserr("socket");
-    
-    /* set reusing address */
-    int optval = 1;
-    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval) < 0)
-        syserr("setsockopt (SO_REUSEADDR");
-    
-    /* set reusing port */
-    optval = 1;
-    if (setsockopt(sock, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof optval) < 0)
-        syserr("setsockopt (SO_REUSEPORT)");
 
     /* activating broadcasting */
-    optval = 1;
+    int optval = 1;
     if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &optval, sizeof optval) < 0)
         syserr("setsockopt (SO_BROADCAST)");
 
@@ -85,10 +75,10 @@ char *Udp_socket::create_datagram(uint16_t type, uint16_t length, std::string me
     length = htons(length);
 
 
-    ret[0] = (char)(type / 8);
-    ret[1] = (char)(type % 8);
-    ret[2] = (char)(length / 8);
-    ret[3] = (char)(length % 8);
+    ret[0] = (char)(type / OCTET);
+    ret[1] = (char)(type % OCTET);
+    ret[2] = (char)(length / OCTET);
+    ret[3] = (char)(length % OCTET);
     for (size_t i = 0; i < message.length(); i++) {
         ret[i + 4] = message[i];
     }
@@ -96,8 +86,8 @@ char *Udp_socket::create_datagram(uint16_t type, uint16_t length, std::string me
 }
 
 std::tuple<uint16_t, uint16_t, std::string> Udp_socket::read_datagram(char *data) {
-    uint16_t type = ntohs(data[0]*8 + data[1]);
-    uint16_t length = ntohs(data[2]*8 + data[3]);
+    uint16_t type = ntohs(data[0] * OCTET  + data[1]);
+    uint16_t length = ntohs(data[2] * OCTET + data[3]);
     std::string message(data + 4);
     return std::make_tuple(type, length, message);
 }

@@ -23,20 +23,21 @@
 const std::string OK_response1 = "ICY 200 OK";
 const std::string OK_response2 = "HTTP/1.0 200 OK";
 const std::string OK_response3 = "HTTP/1.1 200 OK";
-const std::string ICY_METAINT = "icy-metaint";
-const std::string ICY_NAME = "icy-name";
+const std::string ICY_METAINT  = "icy-metaint";
+const std::string ICY_NAME     = "icy-name";
 const size_t CONTINUOUS_BUFFER = (1 << 11);
 const int TTL_VALUE = 4;
 const int BSIZE = (1 << 16);
 const int DATA_LENGTH = (1 << 16); /* maximum length of datagram */
+const int OCTET = (1 << 8);
 const long double THREE_AND_HALF_USECONDS = 3.5;
 
 /* datagram types */
-#define DISCOVER  1
-#define IAM       2
-#define KEEPALIVE 3
-#define AUDIO     4
-#define METADATA  6
+const uint16_t DISCOVER  = 1;
+const uint16_t IAM       = 2;
+const uint16_t KEEPALIVE = 3;
+const uint16_t AUDIO     = 4;
+const uint16_t METADATA  = 6;
 
 /* poll groups */
 #define TCP_POLL 0
