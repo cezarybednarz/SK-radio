@@ -153,7 +153,7 @@ void Radio_client::start() {
             auto addr_pair = udp_socket.receive_message();
             auto data = Udp_socket::read_datagram(udp_socket.get_buffer());
 
-            std::cout << "received data: " << std::get<0>(data) << " " << std::get<1>(data) << " [" << std::get<2>(data) << "] " << "from " << inet_ntoa(((struct sockaddr_in *) &addr_pair.first)->sin_addr);
+            std::cout << "received data: " << std::get<0>(data) << " " << std::get<1>(data) << " [" << std::get<2>(data) << "] " << "from " << inet_ntoa(((struct sockaddr_in *) &addr_pair.first)->sin_addr) << "\n";
         }
 
         /* sending data to UDP socket */

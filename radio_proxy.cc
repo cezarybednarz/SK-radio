@@ -409,6 +409,8 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
                     to_send.push_back(data_bytes[j]);
                 }
                 char *message = Udp_socket::create_datagram(AUDIO, to_send.length(), to_send);
+                auto data = Udp_socket::read_datagram(message);
+                std::cout << "sending data: " << std::get<0>(data) << " " << std::get<1>(data) << " [" << std::get<2>(data) << "] "  << "\n";
                 for (auto &client : clients) {
                     udp_socket.send_message_direct(message, std::get<0>(client), std::get<1>(client));
                 }
