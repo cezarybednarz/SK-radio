@@ -379,6 +379,9 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
                     description.append(header_info[ICY_NAME]);
 
                 char *message = Udp_socket::create_datagram(IAM, description.length(), description);
+                auto data = Udp_socket::read_datagram(message);
+                std::cout << "IAM sent data: " << std::get<0>(data) << " " << std::get<1>(data) << " [" << std::get<2>(data) << "] " << "\n";
+
                 udp_socket.send_message_direct(message, addr_pair.first, addr_pair.second);
             }
             if (type == KEEPALIVE) {
@@ -409,9 +412,11 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
                     to_send.push_back(data_bytes[j]);
                 }
                 char *message = Udp_socket::create_datagram(AUDIO, to_send.length(), to_send);
-                auto data = Udp_socket::read_datagram(message);
-                std::cout << "sending data: " << std::get<0>(data) << " " << std::get<1>(data) << " [" << std::get<2>(data) << "] "  << "\n";
                 for (auto &client : clients) {
+
+                    auto data = Udp_socket::read_datagram(message);
+                    std::cout << "sending data: " << std::get<0>(data) << " " << std::get<1>(data) << " [" << std::get<2>(data) << "] "  << "\n";
+
                     udp_socket.send_message_direct(message, std::get<0>(client), std::get<1>(client));
                 }
             }
