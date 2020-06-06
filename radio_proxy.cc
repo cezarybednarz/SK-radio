@@ -357,7 +357,6 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
             auto client_tuple = Udp_socket::read_datagram(buffer);
 
             uint16_t type = std::get<0>(client_tuple);
-            uint16_t length = std::get<1>(client_tuple);
 
             int id = -1; /* id of client with this IP in clients array */
             for (size_t i = 0; i < clients.size(); i++) {
