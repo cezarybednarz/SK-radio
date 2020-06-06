@@ -59,10 +59,9 @@ std::pair <sockaddr, socklen_t> Udp_socket::receive_message() {
 
 void Udp_socket::send_message_direct(std::string message, sockaddr &dst_addr, socklen_t addrlen) {
     memset(buffer, 0, BSIZE);
-    for(size_t i = 0; i < message.size(); i++)
+    for(size_t i = 0; i < message.length(); i++)
         buffer[i] = message[i];
-    //size_t length = strnlen(buffer, BSIZE);
-    if (sendto(sock, buffer, BSIZE, 0, &dst_addr, addrlen) < 0)
+    if (sendto(sock, buffer, message.length(), 0, &dst_addr, addrlen) < 0)
         syserr("sendto");
 }
 
