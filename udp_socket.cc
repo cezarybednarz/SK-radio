@@ -57,9 +57,10 @@ std::pair <sockaddr, socklen_t> Udp_socket::receive_message() {
     return std::make_pair(src_addr, addrlen);
 }
 
-void Udp_socket::send_message_direct(char *message, sockaddr &dst_addr, socklen_t addrlen) {
+void Udp_socket::send_message_direct(std::string message, sockaddr &dst_addr, socklen_t addrlen) {
     memset(buffer, 0, BSIZE);
-    strncpy(buffer, message, BSIZE);
+    for(size_t i = 0; i < message.size(); i++)
+        buffer[i] = message[i];
     size_t length = strnlen(buffer, BSIZE);
     if (sendto(sock, buffer, length, 0, &dst_addr, addrlen) < 0)
         syserr("sendto");
@@ -69,7 +70,7 @@ char* Udp_socket::get_buffer() {
     return buffer;
 }
 
-char *Udp_socket::create_datagram(uint16_t type, uint16_t length, std::string message) {
+std::string Udp_socket::create_datagram(uint16_t type, uint16_t length, std::string message) {
     std::string ret(4 + message.length(), 0);
     type = htons(type);
     length = htons(length);
@@ -82,10 +83,10 @@ char *Udp_socket::create_datagram(uint16_t type, uint16_t length, std::string me
     for (size_t i = 0; i < message.length(); i++) {
         ret[i + 4] = message[i];
     }
-    return const_cast<char*>(ret.c_str());
+    return ret;
 }
 
-std::tuple<uint16_t, uint16_t, std::string> Udp_socket::read_datagram(char *data) {
+std::tuple<uint16_t, uint16_t, std::string> Udp_socket::read_datagram(std::string data) {
     uint16_t type = ntohs(data[0] * OCTET  + data[1]);
     uint16_t length = ntohs(data[2] * OCTET + data[3]);
     std::string message;
