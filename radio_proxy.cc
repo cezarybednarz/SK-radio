@@ -355,7 +355,7 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
             std::string ip_addr = inet_ntoa(((struct sockaddr_in *) &addr_pair.first)->sin_addr);
             auto buffer = udp_socket.get_buffer();
             auto client_tuple = Udp_socket::read_datagram(buffer);
-            
+
             for(int i = 0; i < 4; i++)
                 std::cout << "[" << (uint16_t)buffer[i] << "]";
             std::cout << "\n";
@@ -387,6 +387,10 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
                 auto message = Udp_socket::create_datagram(IAM, description.length(), description);
                 auto data = Udp_socket::read_datagram(message);
                 std::cout << "IAM sent data: " << std::get<0>(data) << " " << std::get<1>(data) << " [" << std::get<2>(data) << "] " << "\n";
+
+                for(int i = 0; i < 4; i++)
+                    std::cout << "[" << (uint16_t)message[i] << "]";
+                std::cout << "\n";
 
                 udp_socket.send_message_direct(message, addr_pair.first, addr_pair.second);
             }

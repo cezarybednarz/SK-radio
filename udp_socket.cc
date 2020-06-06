@@ -61,8 +61,8 @@ void Udp_socket::send_message_direct(std::string message, sockaddr &dst_addr, so
     memset(buffer, 0, BSIZE);
     for(size_t i = 0; i < message.size(); i++)
         buffer[i] = message[i];
-    size_t length = strnlen(buffer, BSIZE);
-    if (sendto(sock, buffer, length, 0, &dst_addr, addrlen) < 0)
+    //size_t length = strnlen(buffer, BSIZE);
+    if (sendto(sock, buffer, BSIZE, 0, &dst_addr, addrlen) < 0)
         syserr("sendto");
 }
 
