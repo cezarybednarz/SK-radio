@@ -127,7 +127,10 @@ void Radio_client::start() {
 
     /* send DISCOVER */
     std::cout << "sending DISCOVER\n";
-    udp_socket.send_message_direct(Udp_socket::create_datagram(DISCOVER, 0, ""), *proxy_sockaddr, proxy_addrlen);
+    std::string message = Udp_socket::create_datagram(DISCOVER, 0, "");
+    auto data = Udp_socket::read_datagram(message);
+    std::cout << "sending data: " << std::get<0>(data) << " " << std::get<1>(data) << " [" << std::get<2>(data) << "] "  << "\n";
+    udp_socket.send_message_direct(message, *proxy_sockaddr, proxy_addrlen);
 
 
     struct pollfd group[1];
@@ -162,7 +165,8 @@ void Radio_client::start() {
             std::clock_t curr_time = std::clock();
             if ((long double)(curr_time - last_keepalive)/(long double)CLOCKS_PER_SEC > THREE_AND_HALF_USECONDS) {
                 std::cout << "sending KEEPALIVE\n";
-                udp_socket.send_message_direct(Udp_socket::create_datagram(KEEPALIVE, 0, ""), *proxy_sockaddr, proxy_addrlen);
+                std::string message = Udp_socket::create_datagram(KEEPALIVE, 0, "");
+                udp_socket.send_message_direct(message, *proxy_sockaddr, proxy_addrlen);
                 last_keepalive = curr_time;
             }
         }
