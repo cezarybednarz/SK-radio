@@ -77,10 +77,10 @@ std::string Udp_socket::create_datagram(uint16_t type, uint16_t length, std::str
     std::string ret(4 + message.length(), 0);
     type = htons(type);
     length = htons(length);
-    ret[1] = (char)(type % OCTET);
-    ret[0] = (char)(type / OCTET);
-    ret[3] = (char)(length % OCTET);
-    ret[2] = (char)(length / OCTET);
+    ret[0] = (char)(type % OCTET);
+    ret[1] = (char)(type / OCTET);
+    ret[2] = (char)(length % OCTET);
+    ret[3] = (char)(length / OCTET);
     for (size_t i = 0; i < message.length(); i++) {
         ret[i + 4] = message[i];
     }
