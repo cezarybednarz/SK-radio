@@ -37,8 +37,6 @@ class Udp_socket {
     struct ip_mreq ip_mreq;
     sockaddr_in local_addr;
 
-    std::vector<std::tuple<sockaddr, socklen_t, int>> clients; /* address, length of address, timestamp of last connection */
-
 public:
     
     Udp_socket(std::string port, std::string multi, int timeout);
