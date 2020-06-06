@@ -403,7 +403,7 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
         }
 
         /* check for timed out clients */
-        std::clock_t curr_time = std::clock(); // todo lekko zbugowane (to swapowanie)
+        std::clock_t curr_time = std::clock();
         for (size_t i = 0; i < clients.size(); i++) {
             /* what if client timed out */
             if (udp_timeout < (long double)(curr_time - std::get<2>(clients[i])) / (long double)CLOCKS_PER_SEC) {
@@ -416,9 +416,9 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
         /* send radio signal to clients (if received) */
         if ((group[UDP_POLL].revents & POLLOUT) && received_audio) {
             /* send AUDIO */
-            for (size_t i = 0; i < data_bytes.length(); i += DATA_LENGTH) { /* if radio sends audio longer that 2^16 */
+            for (size_t i = 0; i < data_bytes.length(); i += 1000) { /* if radio sends audio longer that 2^16 */
                 std::string to_send;
-                for (size_t j = i; j < std::min(data_bytes.length(), i + DATA_LENGTH); j++) {
+                for (size_t j = i; j < std::min(data_bytes.length(), i + 1000); j++) {
                     to_send.push_back(data_bytes[j]);
                 }
                 auto message = Udp_socket::create_datagram(AUDIO, to_send.length(), to_send);
