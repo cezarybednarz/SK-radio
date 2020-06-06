@@ -66,8 +66,12 @@ void Udp_socket::send_message_direct(std::string message, sockaddr &dst_addr, so
         syserr("sendto");
 }
 
-char* Udp_socket::get_buffer() {
-    return buffer;
+std::string Udp_socket::get_buffer() {
+    std::string ret;
+    for(int i = 0; i < BSIZE; i++) {
+        ret.push_back(buffer[i]);
+    }
+    return ret;
 }
 
 std::string Udp_socket::create_datagram(uint16_t type, uint16_t length, std::string message) {
