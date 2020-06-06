@@ -89,7 +89,7 @@ std::tuple<uint16_t, uint16_t, std::string> Udp_socket::read_datagram(char *data
     uint16_t type = ntohs(data[0] * OCTET  + data[1]);
     uint16_t length = ntohs(data[2] * OCTET + data[3]);
     std::string message;
-    for (size_t i = 4; i < BSIZE; i++) {
+    for (size_t i = 4; i < 4 + length; i++) {
         message.push_back(data[i]);
     }
     return std::make_tuple(type, length, message);
