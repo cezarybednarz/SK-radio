@@ -79,7 +79,6 @@ std::string Udp_socket::create_datagram(uint16_t type, uint16_t length, std::str
     type = htons(type);
     length = htons(length);
 
-
     ret[0] = (char)(type / OCTET);
     ret[1] = (char)(type % OCTET);
     ret[2] = (char)(length / OCTET);

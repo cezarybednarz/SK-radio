@@ -353,7 +353,8 @@ void Radio_proxy::udp_casting(Tcp_socket &tcp_socket) {
         if (group[UDP_POLL].revents & POLLIN) { /* receiving signal from client */
             auto addr_pair = udp_socket.receive_message();
             std::string ip_addr = inet_ntoa(((struct sockaddr_in *) &addr_pair.first)->sin_addr);
-            auto client_tuple = Udp_socket::read_datagram(udp_socket.get_buffer());
+            auto buffer = udp_socket.get_buffer();
+            auto client_tuple = Udp_socket::read_datagram(buffer);
             uint16_t type = std::get<0>(client_tuple);
             uint16_t length = std::get<1>(client_tuple);
 
