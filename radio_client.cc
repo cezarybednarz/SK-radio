@@ -110,12 +110,9 @@ Radio_client::Radio_client() {
 }
 
 void Radio_client::start() {
-    std::cout << "Starting radio-client\n";
 
     Udp_socket udp_socket(udp_port, "", timeout);
     udp_socket.socket_connect();
-
-    std::cout << "radio-client started...\n";
 
     /* convert std::string host to sockaddr proxy_sockaddr */
     struct sockaddr_in proxy_addr;
@@ -126,10 +123,8 @@ void Radio_client::start() {
     struct sockaddr *proxy_sockaddr = reinterpret_cast<sockaddr*>(&proxy_addr);
 
     /* send DISCOVER */
-    std::cout << "sending DISCOVER\n";
     std::string message = Udp_socket::create_datagram(DISCOVER, 0, "");
     auto data = Udp_socket::read_datagram(message);
-    std::cout << "sending data: " << std::get<0>(data) << " " << std::get<1>(data) << " [" << std::get<2>(data) << "] "  << "\n";
     udp_socket.send_message_direct(message, *proxy_sockaddr, proxy_addrlen);
 
 
@@ -156,11 +151,15 @@ void Radio_client::start() {
             auto addr_pair = udp_socket.receive_message();
             auto buffer = udp_socket.get_buffer();
             auto data = Udp_socket::read_datagram(buffer);
-
-            std::cout << "received data: " << std::get<0>(data) << " " << std::get<1>(data) << " [" << std::get<2>(data) << "] " << "from " << inet_ntoa(((struct sockaddr_in *) &addr_pair.first)->sin_addr) << "\n";
-            for(int i = 0; i < 4; i++)
-                std::cout << "[" << (uint16_t)buffer[i] << "]";
-            std::cout << "\n";
+            uint16_t type = std::get<0>(data);
+            uint16_t length = std::get<1>(data);
+            std::string content = std::get<2>(data);
+            if (type == AUDIO) {
+                std::cout << content;
+            }
+            if (type == METADATA) {
+                std::cerr << content;
+            }
         }
 
         /* sending data to UDP socket */
@@ -168,7 +167,6 @@ void Radio_client::start() {
             /* sending KEEPALIVE if needed */
             std::clock_t curr_time = std::clock();
             if ((long double)(curr_time - last_keepalive)/(long double)CLOCKS_PER_SEC > THREE_AND_HALF_USECONDS) {
-                std::cout << "sending KEEPALIVE\n";
                 std::string message = Udp_socket::create_datagram(KEEPALIVE, 0, "");
                 udp_socket.send_message_direct(message, *proxy_sockaddr, proxy_addrlen);
                 last_keepalive = curr_time;
